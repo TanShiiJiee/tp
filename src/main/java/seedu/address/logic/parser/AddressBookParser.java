@@ -61,7 +61,7 @@ public class AddressBookParser {
 
         case AddDocCommand.COMMAND_WORD:
             return new AddDocCommandParser().parse(arguments);
-            
+
         case AddPatCommand.COMMAND_WORD:
             return new AddPatCommandParser().parse(arguments);
 

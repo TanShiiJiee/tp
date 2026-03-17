@@ -14,7 +14,7 @@ import seedu.address.model.Model;
 import seedu.address.model.person.Doctor;
 
 /**
- * Adds a person to the address book.
+ * Adds a person to the app.
  */
 public class AddDocCommand extends Command {
 

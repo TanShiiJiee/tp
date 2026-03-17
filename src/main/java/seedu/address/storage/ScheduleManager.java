@@ -3,8 +3,12 @@ package seedu.address.storage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Manages access to the schedule data stored in the schedule JSON file.
+ */
 public class ScheduleManager {
 
     private static final String FILE_PATH = "data/schedule.json";

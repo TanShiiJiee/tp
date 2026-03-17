@@ -2,13 +2,22 @@ package seedu.address.logic.parser;
 
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+
 import seedu.address.logic.commands.ViewSchedCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
+/**
+ * Parses input arguments and creates a new ViewSchedCommand object
+ */
 public class ViewSchedCommandParser implements Parser<ViewSchedCommand> {
-
+    /**
+     * Parses the given {@code String} of arguments in the context of the ViewSchedCommand
+     * and returns an AddDocCoViewSchedCommandmmand object for execution.
+     * @throws ParseException if the user input does not conform the expected format
+     */
     public ViewSchedCommand parse(String args) throws ParseException {
 
         ArgumentMultimap argMultimap =

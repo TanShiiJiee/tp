@@ -1,11 +1,14 @@
 package seedu.address.logic.commands;
 
-import seedu.address.model.Model;
-import seedu.address.storage.ScheduleManager;
-
 import java.time.LocalDate;
 import java.util.Map;
 
+import seedu.address.model.Model;
+import seedu.address.storage.ScheduleManager;
+
+/**
+ * Allows viewing schedules in the app.
+ */
 public class ViewSchedCommand extends Command {
 
     public static final String COMMAND_WORD = "viewsched";
@@ -13,6 +16,9 @@ public class ViewSchedCommand extends Command {
     private final String doctorName;
     private final LocalDate date;
 
+    /**
+     * Creates a ViewSchedCommand to view doctors' schedules.
+     */
     public ViewSchedCommand(String doctorName, LocalDate date) {
         this.doctorName = normalizeSpaces(doctorName);
         this.date = date;
