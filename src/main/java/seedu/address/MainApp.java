@@ -77,10 +77,17 @@ public class MainApp extends Application {
      * or an empty address book will be used instead if errors occur when reading {@code storage}'s address book.
      */
     private Model initModelManager(Storage storage, ReadOnlyUserPrefs userPrefs) {
-        logger.info("Using data file : " + storage.getAddressBookFilePath());
+        logger.info(String.format("Using data files : %s, %s, %s",
+                storage.getPatientsFilePath(),
+                storage.getDoctorsFilePath(),
+                storage.getScheduleFilePath()));
 
         Optional<ReadOnlyAddressBook> addressBookOptional;
-        ReadOnlyAddressBook initialData;
+        ReadOnlyAddressBook initialData = new AddressBook();
+
+        logger.info(String.format("Starting with empty patient data, doctor data and schedule data."));
+
+        /*
         try {
             addressBookOptional = storage.readAddressBook();
             if (!addressBookOptional.isPresent()) {
@@ -93,6 +100,7 @@ public class MainApp extends Application {
                     + " Will be starting with an empty AddressBook.");
             initialData = new AddressBook();
         }
+         */
 
         return new ModelManager(initialData, userPrefs);
     }
