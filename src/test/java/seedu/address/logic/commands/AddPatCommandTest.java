@@ -7,7 +7,6 @@ import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.logic.Logic;
 import seedu.address.logic.Messages;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -20,7 +19,6 @@ import seedu.address.testutil.PatientBuilder;
 public class AddPatCommandTest {
 
     private Model model;
-    private Logic logic;
 
     @Test
     public void constructor_nullPerson_throwsNullPointerException() {
