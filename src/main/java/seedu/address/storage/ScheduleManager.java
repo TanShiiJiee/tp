@@ -155,9 +155,12 @@ public class ScheduleManager {
         }
     }
 
+    /**
+     * deletes an appointment according to the time and date from a doctor's schedule
+     * @param appt
+     */
     public static void delAppt(Appointment appt) {
         String doctorName = appt.getDocName();
-        String patName = appt.getPatName();
         String date = appt.getDate();
         String time = appt.getTime();
         try {
@@ -178,7 +181,7 @@ public class ScheduleManager {
                     Map<String, String> slots =
                             (Map<String, String>) doctorSchedule.get(date);
 
-                    slots.put(time, "Available");
+                    slots.put(time, null);
                     mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
                     break;
                 }
