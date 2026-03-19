@@ -47,7 +47,7 @@ public class ViewSchedCommand extends Command {
                 if (slot.getValue() == null) {
                     result.append(slot.getKey()).append(" – Available\n");
                 } else {
-                    result.append(slot.getKey()).append(" – Booked\n");
+                    result.append(slot.getKey()).append(" – Booked\n");;
                 }
             }
 

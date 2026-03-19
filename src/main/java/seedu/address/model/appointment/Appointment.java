@@ -1,12 +1,22 @@
 package seedu.address.model.appointment;
 
+/**
+ * Creates an Appointment object
+ */
 public class Appointment {
     private String patientName;
     private String doctorName;
     private String date;
     private String time;
 
-    public Appointment( String doctorName, String patientName, String date, String time) {
+    /**
+     * Initialises an Appointment object with the doctorname, patient name, and the date and time
+     * @param doctorName
+     * @param patientName
+     * @param date
+     * @param time
+     */
+    public Appointment(String doctorName, String patientName, String date, String time) {
         this.doctorName = doctorName;
         this.patientName = patientName;
         this.date = date;
@@ -26,7 +36,9 @@ public class Appointment {
         return this.date;
     }
 
-    public String getTime() { return this.time; }
+    public String getTime() {
+        return this.time;
+    }
 
     @Override
     public boolean equals(Object obj) {

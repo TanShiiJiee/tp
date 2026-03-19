@@ -72,6 +72,11 @@ public class ScheduleManager {
             ObjectMapper mapper = new ObjectMapper();
             File file = new File(FILE_PATH);
 
+            file.getParentFile().mkdirs();
+            if (!file.exists() || file.length() == 0) {
+                mapper.writeValue(file, new HashMap<>());
+            }
+
             Map<String, Object> data = mapper.readValue(file, Map.class);
 
             if (data.containsKey(doctorName)) {
@@ -106,6 +111,10 @@ public class ScheduleManager {
         }
     }
 
+    /**
+     * books an appointment for the specific doctor
+     * @param appt
+     */
     public static void addAppt(Appointment appt) {
         String doctorName = appt.getDocName();
         String patName = appt.getPatName();
@@ -117,18 +126,26 @@ public class ScheduleManager {
             Map<String, Object> data = mapper.readValue(file, Map.class);
 
             for (String name : data.keySet()) {
+                System.out.println("Checking: '" + name + "' vs '" + doctorName + "'");
                 if (name.equalsIgnoreCase(doctorName)) {
+                    System.out.println("Doctor found!");
                     Map<String, Object> doctorSchedule =
                             (Map<String, Object>) data.get(name);
-
+                    System.out.println("Date exists: " + doctorSchedule.containsKey(date));
                     if (!doctorSchedule.containsKey(date)) {
                         throw new IOException("Date not found!");
                     }
 
                     Map<String, String> slots =
                             (Map<String, String>) doctorSchedule.get(date);
+                    System.out.println("Slots before: " + slots);
 
-                    slots.put(time, patName); // modifies data directly ✅
+                    slots.put(time, patName);
+                    System.out.println("Slots after put: " + slots);
+                    System.out.println("Writing to: " + file.getAbsolutePath());
+                    mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
+                    System.out.println("Write complete!");
+
                     break;
                 }
             }

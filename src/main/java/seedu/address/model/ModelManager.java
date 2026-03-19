@@ -195,7 +195,9 @@ public class ModelManager implements Model {
 
     @Override
     public void addAppt(Appointment appt) {
+        System.out.println("ModelManager called! appt=" + appt);
         ScheduleManager.addAppt(appt);
+        System.out.println("ScheduleManager called!");
     }
 
     @Override

@@ -2,15 +2,15 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TIME;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TIME;
+
+import java.time.LocalDate;
 
 import seedu.address.logic.commands.exceptions.CommandException;
-import seedu.address.model.appointment.Appointment;
-
 import seedu.address.model.Model;
-
+import seedu.address.model.appointment.Appointment;
 /**
  * Adds an Appointment to the app.
  */
@@ -45,6 +45,15 @@ public class AddApptCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+
+        LocalDate apptDate = LocalDate.parse(toAdd.getDate());
+        LocalDate today = LocalDate.now();
+        LocalDate sevenDaysLater = today.plusDays(7);
+
+        if (apptDate.isBefore(today) || apptDate.isAfter(sevenDaysLater)) {
+            throw new CommandException(
+                    "Appointment date must be within 7 days from today!");
+        }
 
         model.addAppt(toAdd);
         return new CommandResult(MESSAGE_SUCCESS);
