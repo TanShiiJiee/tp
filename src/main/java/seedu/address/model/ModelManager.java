@@ -42,6 +42,22 @@ public class ModelManager implements Model {
         this.patients = new AddressBook(patients);
         this.doctors = new AddressBook(doctors);
         this.userPrefs = new UserPrefs(userPrefs);
+
+        // Merge patients and doctors into addressBook for UI display
+        // Used Copilot for the for loops below to help us get unstuck since our patients and doctors
+        // were not being displayed in the app when we ran it, we realised it was a data
+        // persistence issue but couldn't figure out the best way to handle it for the MVP
+        for (Person p : this.patients.getPersonList()) {
+            if (!this.addressBook.hasPerson(p)) {
+                this.addressBook.addPerson(p);
+            }
+        }
+        for (Person p : this.doctors.getPersonList()) {
+            if (!this.addressBook.hasPerson(p)) {
+                this.addressBook.addPerson(p);
+            }
+        }
+
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
     }
 
@@ -148,11 +164,13 @@ public class ModelManager implements Model {
     @Override
     public void deleteDoctor(Doctor doctor) {
         doctors.removeDoctor(doctor);
+        addressBook.removeDoctor(doctor);
     }
 
     @Override
     public void deletePatient(Patient patient) {
         patients.removePatient(patient);
+        addressBook.removePatient(patient);
     }
 
     @Override
@@ -164,12 +182,14 @@ public class ModelManager implements Model {
     @Override
     public void addPatient(Patient patient) {
         patients.addPatient(patient);
+        addressBook.addPerson(patient);
         updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
     }
 
     @Override
     public void addDoctor(Doctor doctor) {
         doctors.addDoctor(doctor);
+        addressBook.addPerson(doctor);
         updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
     }
 

@@ -83,27 +83,31 @@ public class MainApp extends Application {
                 storage.getDoctorsFilePath(),
                 storage.getScheduleFilePath()));
 
-        Optional<ReadOnlyAddressBook> addressBookOptional;
         ReadOnlyAddressBook initialData = new AddressBook();
-
-        logger.info(String.format("Starting with empty patient data, doctor data and schedule data."));
-        ReadOnlyAddressBook patientData = new AddressBook();
-        ReadOnlyAddressBook doctorData = new AddressBook();
-
-        /*
+        // Assisted by Copilot
+        ReadOnlyAddressBook patientData;
         try {
-            addressBookOptional = storage.readAddressBook();
-            if (!addressBookOptional.isPresent()) {
-                logger.info("Creating a new data file " + storage.getAddressBookFilePath()
-                        + " populated with a sample AddressBook.");
+            Optional<ReadOnlyAddressBook> patientDataOptional = storage.readPatientData();
+            if (!patientDataOptional.isPresent()) {
+                logger.info("Patient data file not found. Starting with empty patient data.");
             }
-            initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
+            patientData = patientDataOptional.orElse(new AddressBook());
         } catch (DataLoadingException e) {
-            logger.warning("Data file at " + storage.getAddressBookFilePath() + " could not be loaded."
-                    + " Will be starting with an empty AddressBook.");
-            initialData = new AddressBook();
+            logger.warning("Patient data could not be loaded. Starting with empty patient data.");
+            patientData = new AddressBook();
         }
-         */
+
+        ReadOnlyAddressBook doctorData;
+        try {
+            Optional<ReadOnlyAddressBook> doctorDataOptional = storage.readDoctorData();
+            if (!doctorDataOptional.isPresent()) {
+                logger.info("Doctor data file not found. Starting with empty doctor data.");
+            }
+            doctorData = doctorDataOptional.orElse(new AddressBook());
+        } catch (DataLoadingException e) {
+            logger.warning("Doctor data could not be loaded. Starting with empty doctor data.");
+            doctorData = new AddressBook();
+        }
 
         return new ModelManager(initialData, patientData, doctorData, userPrefs);
     }

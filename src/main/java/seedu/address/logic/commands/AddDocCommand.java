@@ -57,7 +57,7 @@ public class AddDocCommand extends Command {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
 
-        model.addPerson(toAdd);
+        model.addDoctor(toAdd);
         ScheduleManager.addDoctorSchedule(toAdd.getName().fullName);
         return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
     }

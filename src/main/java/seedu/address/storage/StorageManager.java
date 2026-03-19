@@ -17,20 +17,18 @@ import seedu.address.model.UserPrefs;
 public class StorageManager implements Storage {
 
     private static final Logger logger = LogsCenter.getLogger(StorageManager.class);
-    private AddressBookStorage addressBookStorage;
     private AddressBookStorage patientDataStorage;
     private AddressBookStorage doctorDataStorage;
     private AddressBookStorage scheduleDataStorage;
     private UserPrefsStorage userPrefsStorage;
 
     /**
-     * Creates a {@code StorageManager} with the given {@code AddressBookStorage} and {@code UserPrefStorage}.
+     * Creates a {@code StorageManager} with the given storage components.
      */
     public StorageManager(AddressBookStorage patientDataStorage,
                           AddressBookStorage doctorDataStorage,
                           AddressBookStorage scheduleDataStorage,
                           UserPrefsStorage userPrefsStorage) {
-        // this.addressBookStorage = addressBookStorage;
         this.patientDataStorage = patientDataStorage;
         this.doctorDataStorage = doctorDataStorage;
         this.scheduleDataStorage = scheduleDataStorage;
@@ -59,7 +57,14 @@ public class StorageManager implements Storage {
 
     @Override
     public Path getAddressBookFilePath() {
-        return addressBookStorage.getAddressBookFilePath();
+        // We needed to get rid of the addressbook file in the future, and
+        // asked Copilot to suggest if this should be done for the MVP
+        // and if so then how would data be displayed on screen, Copilot
+        // suggested keeping it to not break the code for now
+        // Code below written by Copilot
+        // Legacy method required by AddressBookStorage interface.
+        // Returns patient data path as a fallback for status bar display.
+        return patientDataStorage.getAddressBookFilePath();
     }
 
     @Override
@@ -79,54 +84,56 @@ public class StorageManager implements Storage {
 
     @Override
     public Optional<ReadOnlyAddressBook> readAddressBook() throws DataLoadingException {
-        return readAddressBook(addressBookStorage.getAddressBookFilePath());
+        // Code by Copilot
+        throw new UnsupportedOperationException("Use readPatientData() or readDoctorData() instead.");
     }
 
     @Override
     public Optional<ReadOnlyAddressBook> readAddressBook(Path filePath) throws DataLoadingException {
-        logger.fine("Attempting to read data from file: " + filePath);
-        return addressBookStorage.readAddressBook(filePath);
+        // Code by Copilot
+        throw new UnsupportedOperationException("Use readPatientData() or readDoctorData() instead.");
     }
 
     @Override
     public Optional<ReadOnlyAddressBook> readPatientData() throws DataLoadingException {
-        return readAddressBook(patientDataStorage.getAddressBookFilePath());
+        return patientDataStorage.readAddressBook();
     }
 
     @Override
     public Optional<ReadOnlyAddressBook> readDoctorData() throws DataLoadingException {
-        return readAddressBook(doctorDataStorage.getAddressBookFilePath());
+        return doctorDataStorage.readAddressBook();
     }
 
     @Override
     public Optional<ReadOnlyAddressBook> readScheduleData() throws DataLoadingException {
-        return readAddressBook(scheduleDataStorage.getAddressBookFilePath());
+        return scheduleDataStorage.readAddressBook();
     }
 
     @Override
     public void saveAddressBook(ReadOnlyAddressBook addressBook) throws IOException {
-        saveAddressBook(addressBook, addressBookStorage.getAddressBookFilePath());
+        // Code by Copilot
+        throw new UnsupportedOperationException("Use savePatientData() or saveDoctorData() instead.");
     }
 
     @Override
     public void saveAddressBook(ReadOnlyAddressBook addressBook, Path filePath) throws IOException {
-        logger.fine("Attempting to write to data file: " + filePath);
-        addressBookStorage.saveAddressBook(addressBook, filePath);
+        // Code by Copilot
+        throw new UnsupportedOperationException("Use savePatientData() or saveDoctorData() instead.");
     }
 
     @Override
     public void savePatientData(ReadOnlyAddressBook patientData) throws IOException {
-        saveAddressBook(patientData, patientDataStorage.getAddressBookFilePath());
+        patientDataStorage.saveAddressBook(patientData);
     }
 
     @Override
     public void saveDoctorData(ReadOnlyAddressBook doctorData) throws IOException {
-        saveAddressBook(doctorData, doctorDataStorage.getAddressBookFilePath());
+        doctorDataStorage.saveAddressBook(doctorData);
     }
 
     @Override
     public void saveScheduleData(ReadOnlyAddressBook scheduleData) throws IOException {
-        saveAddressBook(scheduleData, scheduleDataStorage.getAddressBookFilePath());
+        scheduleDataStorage.saveAddressBook(scheduleData);
     }
 
 }
