@@ -93,6 +93,7 @@ public class AddressBookParser {
 
         case ViewSchedCommand.COMMAND_WORD:
             return new ViewSchedCommandParser().parse(arguments);
+
         case AddApptCommand.COMMAND_WORD:
             return new AddApptCommandParser().parse(arguments);
 

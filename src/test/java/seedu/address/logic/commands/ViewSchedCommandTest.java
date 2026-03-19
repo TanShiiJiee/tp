@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
  */
 public class ViewSchedCommandTest {
 
-    private static final String FILE_PATH = "data/Schedule.json";
+    private static final String FILE_PATH = "data/schedule.json";
 
     @BeforeEach
     public void setup() throws Exception {
