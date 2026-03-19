@@ -73,7 +73,7 @@ CLInicDesk is optimized for use through a Command Line Interface (CLI) while sti
 
 Shows a message explaining how to access the help page.
 
-![help message](images/helpMessage.png)
+![help message](images/helpMessageTwo.png)
 
 Format: `help`
 
@@ -87,6 +87,16 @@ Format: `adddoc n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS…​`
 Examples:
 * `adddoc n/John Doe p/98765432 e/johnd@doctor.com a/John street, block 123, #01-01`
 * `adddoc n/Betsy Crowe e/betsycrowe@doctor.com a/Newgate Hospital p/1234567`
+* 
+### Adding a doctor: `addpat`
+
+Adds a patient to the app.
+
+Format: `addpat n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS…​`
+
+Examples:
+* `addpat n/John Doe p/98765432 e/johnd@doctor.com a/John street, block 123, #01-01`
+* `addpat n/Betsy Crowe e/betsycrowe@doctor.com a/Newgate Hospital p/1234567`
 
 ### Listing all persons : `list`
 
