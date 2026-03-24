@@ -37,9 +37,9 @@ CLInicDesk is optimized for use through a Command Line Interface (CLI) while sti
 
    * `deldoc 3` : Deletes the 3rd doctor shown in the current list.
 
-   * `clear` : Deletes all contacts.
+    * `clear` : Deletes all contacts.
 
-   * `exit` : Exits the app.
+    * `exit` : Exits the app.
 
 1. Refer to the [Features](#features) below for details of each command.
 
@@ -67,7 +67,7 @@ CLInicDesk is optimized for use through a Command Line Interface (CLI) while sti
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
-</box>
+  </box>
 
 ### Viewing help : `help`
 
@@ -77,6 +77,23 @@ Shows a message explaining how to access the help page.
 
 Format: `help`
 
+### Adding an appointment : `addappt`
+Adds an appointment on a specific date, at a specific time from a doctor's schedule.
+
+Format: `addappt d/DOCTORNAME n/PATIENTNAME date/YYYY-MM-DD time/HH:MM`
+
+* Books an appointment in the relevant doctor's schedule at the specified date and time
+* Date must not fall beyond the 7 day range(counted from today's date)
+* Time must fall within operating hours(9am to 5pm)
+
+Examples:
+* `addappt d/John Tan n/Jane date/2026-03-21 time/09:00` books an appointment for Jane in Dr John's schedule on 2026-03-21 at 9am, followed by
+  `viewsched d/John Tan date/2026-03-21` command will show the 9am slot as `Booked`.
+
+Expected output:
+```
+New appointment added!
+```
 
 ### Adding a doctor: `adddoc`
 
@@ -87,7 +104,12 @@ Format: `adddoc n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS…​`
 Examples:
 * `adddoc n/John Doe p/98765432 e/johnd@doctor.com a/John street, block 123, #01-01`
 * `adddoc n/Betsy Crowe e/betsycrowe@doctor.com a/Newgate Hospital p/1234567`
-* 
+
+Expected output:
+```
+New doctor added: John Doe; Phone: 98765432; Email: johnd@doctor.com; Address: John street, block 123, #01-01; Tags:
+```
+
 ### Adding a patient: `addpat`
 
 Adds a patient to the app.
@@ -133,6 +155,24 @@ Examples:
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
   ![result for 'find alex david'](images/findAlexDavidResult.png)
 
+### Deleting an appointment : `delappt`
+Deletes an appointment on a specific date, at a specific time to a doctor's schedule.
+
+Format: `delappt d/DOCTORNAME n/PATIENTNAME date/YYYY-MM-DD time/HH:MM`
+
+* Deletes the appointment in the relevant doctor's schedule at the specified date and time
+* Date must not fall beyond the 7 day range(counted from today's date)
+* Time must fall within operating hours(9am to 5pm)
+
+Examples:
+* If the 9am slot for Dr John Tan on 2026-03-21 was booked, then `delappt d/John Tan n/Jane date/2026-03-21 time/09:00`
+  followed by `viewsched d/John Tan date/2026-03-21` command will show the 9am slot as `Available`.
+
+Expected output:
+```
+Appointment deleted!
+```
+
 ### Deleting a doctor : `deldoc`
 
 Deletes the specified doctor from the app.
@@ -140,17 +180,22 @@ Deletes the specified doctor from the app.
 Format: `deldoc INDEX`
 
 * Deletes the doctor at the specified `INDEX`.
-* The index refers to the index number shown in the displayed do list.
+* The index refers to the index number shown in the displayed doctor list.
 * The index **must be a positive integer** 1, 2, 3, …​
 
 
 Examples:
 - The list may be as follows:
-  1. Patient
-  2. Doctor
-  3. Patient
+    1. Patient
+    2. Doctor
+    3. Patient
 
 To delete the doctor, type `deldoc 2`
+
+Expected output:
+```
+Deleted Doctor: John Doe; Phone: 98765432; Email: johnd@doctor.com; Address: John street, block 123, #01-01; Tags:
+```
 
 ### Deleting a patient : `delpat`
 
@@ -205,7 +250,7 @@ Schedule for John Tan on 2026-02-22
 09:30 – Booked
 10:00 – Available
 10:30 – Available
-11:00 – Booked
+11:00 – Available
 11:30 – Available
 12:00 – Available
 12:30 – Available
@@ -255,6 +300,10 @@ If your changes to the data file makes its format invalid, CLInicDesk will disca
 Furthermore, certain edits can cause the CLInicDesk to behave in unexpected ways (e.g., if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
 </box>
 
+### Archiving data files `[coming in v2.0]`
+
+_Details coming soon ..._
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## FAQ
@@ -275,9 +324,15 @@ Furthermore, certain edits can cause the CLInicDesk to behave in unexpected ways
 
 Action     | Format, Examples
 -----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**Add Doctor**    | `addoc n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS…​` <br> e.g., `adddoc n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665`
+**Add Appointment** | `addappt d/DOCTOR_NAME n/PATIENT_NAME date/YYYY-MM-DD time/HH:MM` <br> e.g., `addappt d/James Ho n/Jane Tan date/2026-03-21 time/09:00`
+**Add Doctor**    | `adddoc n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS…​` <br> e.g., `adddoc n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665`
+**Add Patient** | `addpat n/NAME p/PHONE e/EMAIL a/ADDRESS` <br> e.g., `addpat n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665`
 **Clear**  | `clear`
+**Delete Appointment** | `delappt d/DOCTOR_NAME n/PATIENT_NAME date/YYYY-MM-DD time/HH:MM` <br> e.g., `delappt d/James Ho n/Jane Tan date/2026-03-21 time/09:00`
 **Delete Doctor** | `deldoc INDEX`<br> e.g., `deldoc 3`
+**Delete Patient** | `delpat INDEX` <br> e.g., `delpat 2`
+**Exit** | `exit`
 **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **List**   | `list`
+**View Schedule** | `viewsched d/DOCTOR_NAME date/YYYY-MM-DD`<br> e.g., `viewsched d/John Tan date/2026-03-20`
 **Help**   | `help`
