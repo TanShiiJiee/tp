@@ -219,6 +219,14 @@ public class ModelManager implements Model {
         doctors.setDoctor(target, editedDoctor);
         addressBook.setPerson(target, editedDoctor);
     }
+
+    @Override
+    public void setPatient(Patient target, Patient editedPatient) {
+        requireAllNonNull(target, editedPatient);
+
+        patients.setPatient(target, editedPatient);
+        addressBook.setPerson(target, editedPatient);
+    }
     //=========== Filtered Person List Accessors =============================================================
 
     /**

@@ -153,6 +153,13 @@ public interface Model {
      */
     void setDoctor(Doctor target, Doctor editedDoctor);
 
+    /**
+     * Replaces the given patient {@code target} with {@code editedPatient}.
+     * {@code target} must exist in the app.
+     * The person identity of {@code editedPatient} must not be the same as another existing patient in the app.
+     */
+    void setPatient(Patient target, Patient editedPatient);
+
     /** Returns an unmodifiable view of the filtered person list */
     ObservableList<Person> getFilteredPersonList();
 

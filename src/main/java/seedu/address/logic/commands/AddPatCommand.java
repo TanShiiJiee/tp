@@ -80,5 +80,6 @@ public class AddPatCommand extends Command {
         return new ToStringBuilder(this)
                 .add("toAdd", toAdd)
                 .toString();
+
     }
 }
