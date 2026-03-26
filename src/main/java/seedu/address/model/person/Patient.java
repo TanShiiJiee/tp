@@ -38,9 +38,9 @@ public class Patient extends Person {
         this.apptList.remove(appt);
     }
 
-//    @Override
-//    public String toString() {
-//        return "Patient: " + super.toString();
-//    }
+    /*@Override
+    public String toString() {
+        return "Patient: " + super.toString();
+    }*/
 
 }
