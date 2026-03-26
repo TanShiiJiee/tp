@@ -95,7 +95,7 @@ public class EditPatCommand extends Command {
 
     /**
      * Creates and returns a {@code Patient} with the details of {@code patientToEdit}
-     * edited with {@code editPatientDescriptor}.
+     * edited with {@code editPatDescriptor}.
      */
     private static Patient createEditedPatient(Patient patientToEdit,
                                                EditPatCommand.EditPatDescriptor editPatDescriptor) {
