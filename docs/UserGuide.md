@@ -248,6 +248,25 @@ Schedule for John Tan on 2026-03-31
 
 ```
 
+### Editing a patient's details : `editpat`
+
+Edits the details of an existing patient in the app.
+Format: `editpat INDEX n/NAME p/PHONE e/EMAIL a/ADDRESS`
+
+**Notes:**
+* Edits the patient at the specified `INDEX`.
+* The index refers to the index number shown in the displayed list.
+* The index **must be a positive integer** 1, 2, 3, …​
+* There must be at least one field to edit. e.g. `editpat 2 n/John Doe` is acceptable, but `editpat 2` is not.
+
+
+Examples:
+* `editpat 2 n/John Doe` changes the name of a patient in the index to `John Doe`.
+
+Expected output:
+```
+Edited Patient: John Doe; Phone: 91234567; Email: johndoe@example.com; Address: 123456; Tags: 
+```
 ### Clearing all entries : `clear`
 
 Clears all entries from the app UI temporarily. This does not delete data.
@@ -281,6 +300,7 @@ CLInicDesk data are saved in the hard disk automatically after any command that 
 **Caution:**
 If your changes to the data file makes its format invalid, CLInicDesk will discard all data and start with an empty data file at the next run.  Hence, it is recommended to take a backup of the file before editing it.<br>
 Furthermore, certain edits can cause the CLInicDesk to behave in unexpected ways (e.g., if a value entered is outside the acceptable range). Therefore, edit the data file only if you are confident that you can update it correctly.
+
 </box>
 
 ### Archiving data files `[coming in v2.0]`
@@ -314,6 +334,7 @@ Action     | Format, Examples
 **Delete Appointment** | `delappt d/DOCTOR_NAME n/PATIENT_NAME date/YYYY-MM-DD time/HH:MM` <br> e.g., `delappt d/James Ho n/Jane Tan date/2026-03-21 time/09:00`
 **Delete Doctor** | `deldoc INDEX`<br> e.g., `deldoc 3`
 **Delete Patient** | `delpat INDEX` <br> e.g., `delpat 2`
+**Edit Patient** | `editpat INDEX n/NAME p/PHONE e/EMAIL a/ADDRESS` <br> e.g., `editpat 2 n/James Ho p/22224444
 **Exit** | `exit`
 **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **List**   | `list`
