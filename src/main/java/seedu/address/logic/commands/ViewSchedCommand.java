@@ -1,7 +1,9 @@
 package seedu.address.logic.commands;
 
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import seedu.address.model.Model;
 import seedu.address.storage.ScheduleManager;
@@ -14,8 +16,8 @@ public class ViewSchedCommand extends Command {
     public static final String COMMAND_WORD = "viewsched";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Views the schedule of a doctor for a specific date.\n"
-            + "Parameters: d/DOCTOR_NAME date/YYYY-MM-DD\n"
+            + ": Views the schedule of a doctor (optionally for a specific date).\n"
+            + "Parameters: d/DOCTOR_NAME [date/YYYY-MM-DD]\n"
             + "Example: " + COMMAND_WORD + " d/John Tan date/2026-03-20";
 
     public static final String MESSAGE_SUCCESS = "Schedule for %1$s on %2$s\n\n";
@@ -36,28 +38,38 @@ public class ViewSchedCommand extends Command {
 
     @Override
     public CommandResult execute(Model model) {
-
         try {
-            Map<String, String> schedule =
-                    ScheduleManager.getScheduleIgnoreCase(doctorName, date.toString());
+            if (date != null) {
+                // Single day behavior
+                Map<String, String> schedule =
+                        ScheduleManager.getScheduleIgnoreCase(doctorName, date.toString());
 
-            if (schedule == null) {
-                return new CommandResult(MESSAGE_DOCTOR_NOT_FOUND);
-            }
-
-            StringBuilder result = new StringBuilder();
-            result.append(String.format(MESSAGE_SUCCESS, doctorName, date));
-
-            for (Map.Entry<String, String> slot : schedule.entrySet()) {
-                if (slot.getValue() == null) {
-                    result.append(slot.getKey()).append(" – Available\n");
-                } else {
-                    result.append(slot.getKey()).append(" – Booked\n");;
+                if (schedule == null) {
+                    return new CommandResult(MESSAGE_DOCTOR_NOT_FOUND);
                 }
+
+                return new CommandResult(
+                        String.format(MESSAGE_SUCCESS, doctorName, date),
+                        schedule
+                );
+
+            } else {
+                // Weekly behavior: collect schedules for 7 days
+                Map<String, Map<String, String>> weeklySchedule = new LinkedHashMap<>();
+
+                LocalDate today = LocalDate.now();
+                for (int i = 0; i < 7; i++) {
+                    LocalDate d = today.plusDays(i);
+                    Map<String, String> schedule =
+                            ScheduleManager.getScheduleIgnoreCase(doctorName, d.toString());
+                    weeklySchedule.put(d.toString(), schedule);
+                }
+
+                return new CommandResult(
+                        "Weekly schedule for " + doctorName,
+                        weeklySchedule, true
+                );
             }
-
-            return new CommandResult(result.toString());
-
         } catch (IllegalArgumentException e) {
             return new CommandResult(MESSAGE_DATE_NOT_AVAILABLE);
         }
@@ -69,6 +81,7 @@ public class ViewSchedCommand extends Command {
     private String normalizeSpaces(String s) {
         return s.trim().replaceAll("\\s+", " ");
     }
+
 
     @Override
     public boolean equals(Object other) {
@@ -82,6 +95,6 @@ public class ViewSchedCommand extends Command {
 
         ViewSchedCommand otherCommand = (ViewSchedCommand) other;
         return doctorName.equals(otherCommand.doctorName)
-                && date.equals(otherCommand.date);
+                && Objects.equals(date, otherCommand.date);
     }
 }

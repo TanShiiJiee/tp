@@ -125,7 +125,20 @@ public interface Model {
      * deletes the given appointment
      * @param appt
      */
-    void delAppt(Appointment appt);
+    void delAppt(Appointment appt) throws IOException;
+
+    /**
+     * edits the given appointment to alter the info
+     * @param oldDoc
+     * @param oldDate
+     * @param oldTime
+     * @param newPat
+     * @param newDoc
+     * @param newDate
+     * @param newTime
+     */
+    void editAppt(String oldDoc, String oldDate,
+                  String oldTime, String newPat, String newDoc, String newDate, String newTime) throws IOException;
 
     /**
      * Adds the given doctor.
@@ -152,6 +165,13 @@ public interface Model {
      * The person identity of {@code editedDoctor} must not be the same as another existing doctor in the app.
      */
     void setDoctor(Doctor target, Doctor editedDoctor);
+
+    /**
+     * Replaces the given patient {@code target} with {@code editedPatient}.
+     * {@code target} must exist in the app.
+     * The person identity of {@code editedPatient} must not be the same as another existing patient in the app.
+     */
+    void setPatient(Patient target, Patient editedPatient);
 
     /** Returns an unmodifiable view of the filtered person list */
     ObservableList<Person> getFilteredPersonList();
