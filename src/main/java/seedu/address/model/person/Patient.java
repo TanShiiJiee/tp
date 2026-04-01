@@ -17,7 +17,6 @@ public class Patient extends Person {
      * @param phone
      * @param email
      * @param address
-     * @param tags
      */
     public Patient(Name name, Phone phone, Email email, Address address) {
         super(name, phone, email, address);

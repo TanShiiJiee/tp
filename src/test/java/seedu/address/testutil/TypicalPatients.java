@@ -35,7 +35,7 @@ public class TypicalPatients {
             .withEmail("cornelia@example.com").withAddress("10th street").build();
     public static final Patient ELLE = new PatientBuilder().withName("Elle Meyer").withPhone("9482224")
             .withEmail("werner@example.com").withAddress("michegan ave").build();
-    public static final Patient FIONA = new PatientBuilder().withName("Fiona Kunz").withPhone("9482427")
+    public static final Patient FIONA = new PatientBuilder().withName("Fiona Kunz").withPhone("94821427")
             .withEmail("lydia@example.com").withAddress("little tokyo").build();
     public static final Patient GEORGE = new PatientBuilder().withName("George Best").withPhone("9482442")
             .withEmail("anna@example.com").withAddress("4th street").build();
