@@ -77,6 +77,42 @@ public class ScheduleManager {
     }
 
     /**
+     * Removes a doctor's schedule entry from schedule.json.
+     *
+     * @param doctorName the name of the doctor whose schedule needs to be removed.
+     */
+    public static void removeDoctorSchedule(String doctorName) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        File file = new File(FILE_PATH);
+        Map<String, Object> data = readScheduleFile();
+
+        String matchedDoctor = findDoctorKey(data, doctorName);
+        if (matchedDoctor != null) {
+            data.remove(matchedDoctor);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
+        }
+    }
+
+    /**
+     * Renames a doctor's key in schedule.json, preserving all existing schedule data.
+     *
+     * @param currDoctorName the current name of the doctor as shown in the schedule.
+     * @param newDoctorName the new name of doctor being renamed.
+     */
+    public static void renameDoctorSchedule(String currDoctorName, String newDoctorName) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        File file = new File(FILE_PATH);
+        Map<String, Object> data = readScheduleFile();
+
+        String matchedDoctor = findDoctorKey(data, currDoctorName);
+        if (matchedDoctor != null) {
+            Object scheduleData = data.remove(matchedDoctor);
+            data.put(newDoctorName, scheduleData);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
+        }
+    }
+
+    /**
      * Synchronises the schedule file so it is current for today.
      * Missing doctors from the provided list are added with empty 7-day windows.
      *

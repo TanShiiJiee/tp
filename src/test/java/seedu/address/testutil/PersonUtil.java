@@ -5,8 +5,10 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 
+import seedu.address.logic.commands.AddDocCommand;
 import seedu.address.logic.commands.AddPatCommand;
 import seedu.address.logic.commands.EditDocCommand.EditDoctorDescriptor;
+import seedu.address.model.person.Doctor;
 import seedu.address.model.person.Patient;
 import seedu.address.model.person.Person;
 
@@ -14,6 +16,13 @@ import seedu.address.model.person.Person;
  * A utility class for Person.
  */
 public class PersonUtil {
+
+    /**
+     * Returns an add command string for adding the {@code doctor}.
+     */
+    public static String getDocAddCommand(Doctor doctor) {
+        return AddDocCommand.COMMAND_WORD + " " + getPersonDetails(doctor);
+    }
 
     /**
      * Returns an add command string for adding the {@code person}.

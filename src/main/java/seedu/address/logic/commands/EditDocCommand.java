@@ -23,6 +23,7 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.storage.ScheduleManager;
 
 /**
  * Edits the details of an existing doctor in the app.
@@ -79,11 +80,23 @@ public class EditDocCommand extends Command {
         Doctor doctorToEdit = (Doctor) personToEdit;
         Doctor editedDoctor = createEditedDoctor(doctorToEdit, editDoctorDescriptor);
 
-        if (!doctorToEdit.isSamePerson(editedDoctor) && model.hasPerson(editedDoctor)) {
+        if (!doctorToEdit.isSamePerson(editedDoctor) && model.hasDoctor(editedDoctor)) {
             throw new CommandException(MESSAGE_DUPLICATE_DOCTOR);
         }
 
+        String currDoctorName = doctorToEdit.getName().fullName;
+        String newDoctorName = editedDoctor.getName().fullName;
+
         model.setDoctor(doctorToEdit, editedDoctor);
+
+        if (!currDoctorName.equalsIgnoreCase(newDoctorName)) {
+            try {
+                ScheduleManager.renameDoctorSchedule(currDoctorName, newDoctorName);
+            } catch (java.io.IOException e) {
+                throw new CommandException("Failed to update schedule file.");
+            }
+        }
+
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         return new CommandResult(String.format(MESSAGE_EDIT_DOCTOR_SUCCESS, Messages.format(editedDoctor)));
     }
@@ -93,7 +106,7 @@ public class EditDocCommand extends Command {
      * edited with {@code editDoctorDescriptor}.
      */
     private static Doctor createEditedDoctor(Person doctorToEdit, EditDoctorDescriptor editDoctorDescriptor) {
-        assert doctorToEdit != null;
+        requireNonNull(doctorToEdit);
 
         Name updatedName = editDoctorDescriptor.getName().orElse(doctorToEdit.getName());
         Phone updatedPhone = editDoctorDescriptor.getPhone().orElse(doctorToEdit.getPhone());

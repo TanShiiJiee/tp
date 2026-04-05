@@ -33,7 +33,8 @@ public class AddDocCommand extends Command {
             + PREFIX_ADDRESS + "311, Clementi Ave 2, #02-25 ";
 
     public static final String MESSAGE_SUCCESS = "New doctor added: %1$s";
-    public static final String MESSAGE_DUPLICATE_PERSON = "This doctor already exists in the address book";
+    public static final String MESSAGE_DUPLICATE_PERSON =
+            "A doctor with these contact details already exists in the app";
 
     private final Doctor toAdd;
 
@@ -49,7 +50,7 @@ public class AddDocCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        if (model.hasPerson(toAdd)) {
+        if (model.hasDoctor(toAdd)) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
         }
 
