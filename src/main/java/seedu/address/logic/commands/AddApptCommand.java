@@ -12,6 +12,7 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.appointment.Appointment;
+import seedu.address.storage.AppointmentManager;
 /**
  * Adds an Appointment to the app.
  */
@@ -30,7 +31,7 @@ public class AddApptCommand extends Command {
             + PREFIX_DATE + " 2026-03-11 "
             + PREFIX_TIME + " 9:00 ";
 
-    public static final String MESSAGE_SUCCESS = "New appointment added!";
+    public static final String MESSAGE_SUCCESS = "New appointment added! ID: %1$d";
     public static final String MESSAGE_DUPLICATE_APPT = "This appointment already exists in the address book";
 
 
@@ -48,13 +49,23 @@ public class AddApptCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
+        boolean addedToStore = false;
         try {
+            AppointmentManager.addAppointment(toAdd);
+            addedToStore = true;
             model.addAppt(toAdd);
-            return new CommandResult(MESSAGE_SUCCESS);
         } catch (IOException e) {
+            if (addedToStore) {
+                try {
+                    AppointmentManager.deleteAppointment(toAdd.getApptID());
+                } catch (IOException ignored) {
+                    // Best-effort cleanup if schedule add fails after persistence.
+                }
+            }
             throw new CommandException(e.getMessage());
         }
 
+        return new CommandResult(String.format(MESSAGE_SUCCESS, toAdd.getApptID()));
     }
 
     @Override

@@ -133,17 +133,17 @@ public interface Model {
     void delAppt(Appointment appt) throws IOException;
 
     /**
-     * edits the given appointment to alter the info
-     * @param oldDoc
-     * @param oldDate
-     * @param oldTime
+     * Edits the given appointment to alter the info.
+     * @param oldAppt
      * @param newPat
      * @param newDoc
      * @param newDate
      * @param newTime
+     * @return the edited appointment
+     * @throws IOException
      */
-    void editAppt(String oldDoc, String oldDate,
-                  String oldTime, String newPat, String newDoc, String newDate, String newTime) throws IOException;
+    Appointment editAppt(Appointment oldAppt, String newPat, String newDoc,
+                         String newDate, String newTime) throws IOException;
 
     /**
      * Adds the given doctor.

@@ -4,6 +4,7 @@ import java.util.List;
 
 import seedu.address.model.Model;
 import seedu.address.model.person.Doctor;
+import seedu.address.storage.AppointmentManager;
 import seedu.address.storage.ScheduleManager;
 
 /**
@@ -15,6 +16,8 @@ public class ScheduleInitialiser {
      * Synchronises the schedule file so it always covers the current 7-day window.
      */
     public static void initialize(Model model) {
+        AppointmentManager.initialise();
+
         List<String> doctorNames = model.getFilteredPersonList().stream()
                 .filter(p -> p instanceof Doctor)
                 .map(p -> ((Doctor) p).getName().fullName)

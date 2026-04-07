@@ -1,12 +1,10 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_APPT_ID;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWDATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWDOC;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWNAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWTIME;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_TIME;
 
 import seedu.address.logic.commands.EditApptCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -22,31 +20,31 @@ public class EditApptCommandParser {
      */
     public EditApptCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args,
-                PREFIX_DATE, PREFIX_TIME, PREFIX_DOCTOR,
+                PREFIX_APPT_ID,
                 PREFIX_NEWDATE, PREFIX_NEWTIME, PREFIX_NEWDOC, PREFIX_NEWNAME);
 
-        if (argMultimap.getAllValues(PREFIX_DOCTOR).isEmpty()
-                || argMultimap.getAllValues(PREFIX_DATE).isEmpty()
-                || argMultimap.getAllValues(PREFIX_TIME).isEmpty()) {
+        if (argMultimap.getValue(PREFIX_APPT_ID).isEmpty() || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException("Missing required fields to identify the appointment! "
-                    + "Need d/, date/, and time/.");
+                    + "Need id/.");
         }
 
-        String oldDoc = argMultimap.getAllValues(PREFIX_DOCTOR).get(0);
-        String oldDate = argMultimap.getAllValues(PREFIX_DATE).get(0);
-        String oldTime = argMultimap.getAllValues(PREFIX_TIME).get(0);
+        String idValue = argMultimap.getValue(PREFIX_APPT_ID).get().trim();
+        int apptId;
+        try {
+            apptId = Integer.parseInt(idValue);
+        } catch (NumberFormatException e) {
+            throw new ParseException("Appointment id must be a non-negative integer.");
+        }
 
-        String newDoc = argMultimap.getAllValues(PREFIX_NEWDOC).size() > 1
-                ? argMultimap.getAllValues(PREFIX_NEWDOC).get(1) : null;
+        if (apptId < 0) {
+            throw new ParseException("Appointment id must be a non-negative integer.");
+        }
 
-        String newDate = argMultimap.getAllValues(PREFIX_NEWDATE).size() > 1
-                ? argMultimap.getAllValues(PREFIX_NEWDATE).get(1) : null;
-
-        String newTime = argMultimap.getAllValues(PREFIX_NEWTIME).size() > 1
-                ? argMultimap.getAllValues(PREFIX_NEWTIME).get(1) : null;
-
+        String newDoc = argMultimap.getValue(PREFIX_NEWDOC).orElse(null);
+        String newDate = argMultimap.getValue(PREFIX_NEWDATE).orElse(null);
+        String newTime = argMultimap.getValue(PREFIX_NEWTIME).orElse(null);
         String newPat = argMultimap.getValue(PREFIX_NEWNAME).orElse(null);
 
-        return new EditApptCommand(oldDoc, oldDate, oldTime, newPat, newDoc, newDate, newTime);
+        return new EditApptCommand(apptId, newPat, newDoc, newDate, newTime);
     }
 }

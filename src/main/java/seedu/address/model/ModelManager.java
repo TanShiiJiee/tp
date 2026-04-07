@@ -6,6 +6,7 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -219,7 +220,6 @@ public class ModelManager implements Model {
                 .orElseThrow(() -> new IOException("Patient not found: " + appt.getPatName()));
 
         patient.addAppt(appt);
-        System.out.println("Model manager appt added to patient");
         ScheduleManager.addAppt(appt);
 
     }
@@ -236,22 +236,32 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void editAppt(String oldDoc, String oldDate, String oldTime,
-                         String newPat, String newDoc, String newDate, String newTime) throws IOException {
+    public Appointment editAppt(Appointment oldAppt, String newPat, String newDoc,
+                                String newDate, String newTime) throws IOException {
 
-        String oldPatName = ScheduleManager.getPatientAtSlot(oldDoc, oldDate, oldTime);
-        if (oldPatName == null) {
+        String oldDoc = oldAppt.getDocName();
+        String oldDate = oldAppt.getDate();
+        String oldTime = oldAppt.getTime();
+        String oldPatName = oldAppt.getPatName();
+
+        String standardizedTime = LocalTime.parse(oldTime, DateTimeFormatter.ofPattern("H:mm"))
+                .format(DateTimeFormatter.ofPattern("HH:mm"));
+
+        String scheduledPatName = ScheduleManager.getPatientAtSlot(oldDoc, oldDate, standardizedTime);
+        if (scheduledPatName == null) {
             throw new IOException("No appointment exists at: " + oldDoc + " on " + oldDate + " at " + oldTime);
         }
 
-        Appointment oldAppt = new Appointment(oldDoc, oldPatName, oldDate, oldTime);
+        if (!scheduledPatName.equalsIgnoreCase(oldPatName)) {
+            throw new IOException("Appointment details do not match the schedule.");
+        }
 
         String finalPat = (newPat != null) ? newPat : oldPatName;
         String finalDoc = (newDoc != null) ? newDoc : oldDoc;
         String finalDate = (newDate != null) ? newDate : oldDate;
         String finalTime = (newTime != null) ? newTime : oldTime;
 
-        Appointment editedAppt = new Appointment(finalDoc, finalPat, finalDate, finalTime);
+        Appointment editedAppt = new Appointment(finalDoc, finalPat, finalDate, finalTime, oldAppt.getApptID());
 
         if (LocalTime.parse(finalTime).getMinute() % 30 != 0) {
             throw new IOException("Please choose a valid timeslot.");
@@ -265,6 +275,8 @@ public class ModelManager implements Model {
         ScheduleManager.delAppt(oldAppt);
 
         this.addAppt(editedAppt);
+
+        return editedAppt;
     }
 
     /**

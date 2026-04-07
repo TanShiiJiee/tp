@@ -86,7 +86,7 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_editAppt() throws Exception {
         assertTrue(parser.parseCommand(EditApptCommand.COMMAND_WORD
-                + " d/Mavis Goh date/2026-04-30 time/09:00 d/Johnny date/2026-05-01 time/10:00")
+                + " id/3 ntime/10:00 nd/Johnny ndate/2026-05-01")
                 instanceof EditApptCommand);
     }
 
@@ -129,7 +129,7 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_deleteAppt() throws Exception {
         assertTrue(parser.parseCommand(DeleteApptCommand.COMMAND_WORD
-                + " d/Mavis Goh n/Papa Drac date/2026-04-30 time/09:00") instanceof DeleteApptCommand);
+                + " id/3") instanceof DeleteApptCommand);
     }
 
     @Test
