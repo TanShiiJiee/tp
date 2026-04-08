@@ -52,7 +52,7 @@ public class EditApptCommandTest {
         model.addDoctor(doctor);
         model.addPatient(patient);
 
-        EditApptCommand command = new EditApptCommand(APPT_ID, null, null, null, "10:00");
+        EditApptCommand command = new EditApptCommand(APPT_ID, null, null, "10:00");
         command.execute(model);
 
         Appointment updated = AppointmentManager.getAppointmentById(APPT_ID);
@@ -72,7 +72,7 @@ public class EditApptCommandTest {
         model.addDoctor(doctor);
         model.addPatient(patient);
 
-        EditApptCommand command = new EditApptCommand(APPT_ID, null, null, null, "110:00");
+        EditApptCommand command = new EditApptCommand(APPT_ID, null, null, "110:00");
         assertThrows(Exception.class, () -> command.execute(model));
     }
 

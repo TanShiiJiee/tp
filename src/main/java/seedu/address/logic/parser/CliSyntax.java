@@ -17,7 +17,6 @@ public class CliSyntax {
     public static final Prefix PREFIX_NEWTIME = new Prefix("ntime/");
     public static final Prefix PREFIX_NEWDATE = new Prefix("ndate/");
     public static final Prefix PREFIX_NEWDOC = new Prefix("nd/");
-    public static final Prefix PREFIX_NEWNAME = new Prefix("newn/");
     public static final Prefix PREFIX_APPT_ID = new Prefix("id/");
 
 

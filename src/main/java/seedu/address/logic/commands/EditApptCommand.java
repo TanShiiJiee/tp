@@ -4,7 +4,6 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_APPT_ID;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWDATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWDOC;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWNAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWTIME;
 
 import java.io.IOException;
@@ -21,11 +20,10 @@ import seedu.address.storage.AppointmentManager;
 public class EditApptCommand extends Command {
     public static final String COMMAND_WORD = "editappt";
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": changes the doctor/patient/date/time of an appointment"
+            + ": changes the doctor/date/time of an appointment"
             + " Identifies the appointment by id."
             + "Paramters: "
             + PREFIX_APPT_ID + "APPOINTMENT_ID\n"
-            + "[" + PREFIX_NEWNAME + "NEW_PATIENT_NAME] "
             + "[" + PREFIX_NEWDOC + "NEW_DOCTOR_NAME] "
             + "[" + PREFIX_NEWDATE + "NEW_DATE] "
             + "[" + PREFIX_NEWTIME + "NEW_TIME]\n"
@@ -37,22 +35,19 @@ public class EditApptCommand extends Command {
 
     private final int apptId;
     private final String newDoc;
-    private final String newPat;
     private final String newDate;
     private final String newTime;
 
     /**
      * creates an EditApptCommand to edit an existing appointment
      * @param apptId
-     * @param newPat
      * @param newDoc
      * @param newDate
      * @param newTime
      */
-    public EditApptCommand(int apptId, String newPat, String newDoc, String newDate, String newTime) {
+    public EditApptCommand(int apptId, String newDoc, String newDate, String newTime) {
         this.apptId = apptId;
         this.newDoc = newDoc;
-        this.newPat = newPat;
         this.newDate = newDate;
         this.newTime = newTime;
 
@@ -69,7 +64,7 @@ public class EditApptCommand extends Command {
                 throw new CommandException("Appointment id not found: " + apptId);
             }
 
-            Appointment editedAppt = model.editAppt(oldAppt, newPat, newDoc, newDate, newTime);
+            Appointment editedAppt = model.editAppt(oldAppt, newDoc, newDate, newTime);
             AppointmentManager.updateAppointment(apptId, editedAppt);
             return new CommandResult(MESSAGE_SUCCESS);
         } catch (IOException e) {

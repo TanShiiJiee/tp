@@ -135,15 +135,13 @@ public interface Model {
     /**
      * Edits the given appointment to alter the info.
      * @param oldAppt
-     * @param newPat
      * @param newDoc
      * @param newDate
      * @param newTime
      * @return the edited appointment
      * @throws IOException
      */
-    Appointment editAppt(Appointment oldAppt, String newPat, String newDoc,
-                         String newDate, String newTime) throws IOException;
+    Appointment editAppt(Appointment oldAppt, String newDoc, String newDate, String newTime) throws IOException;
 
     /**
      * Adds the given doctor.

@@ -241,8 +241,7 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public Appointment editAppt(Appointment oldAppt, String newPat, String newDoc,
-                                String newDate, String newTime) throws IOException {
+    public Appointment editAppt(Appointment oldAppt, String newDoc, String newDate, String newTime) throws IOException {
 
         String oldDoc = oldAppt.getDocName();
         String oldDate = oldAppt.getDate();
@@ -265,19 +264,14 @@ public class ModelManager implements Model {
             throw new IOException("Appointment details do not match the schedule.");
         }
 
-        String finalPat = (newPat != null) ? newPat : oldPatName;
         String finalDoc = (newDoc != null) ? newDoc : oldDoc;
         String finalDate = (newDate != null) ? newDate : oldDate;
         String finalTime = (newTime != null) ? newTime : oldTime;
 
-        Appointment editedAppt = new Appointment(finalDoc, finalPat, finalDate, finalTime, oldAppt.getApptID());
+        Appointment editedAppt = new Appointment(finalDoc, oldPatName, finalDate, finalTime, oldAppt.getApptID());
 
         if (newDoc != null && !hasDoctorWithName(newDoc)) {
             throw new IOException("Doctor not found: " + newDoc);
-        }
-
-        if (newPat != null && !hasPatientWithName(newPat)) {
-            throw new IOException("The new patient '" + newPat + "' does not exist in the Address Book.");
         }
 
         LocalDate parsedFinalDate;

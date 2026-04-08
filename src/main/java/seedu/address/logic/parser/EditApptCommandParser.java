@@ -3,7 +3,6 @@ package seedu.address.logic.parser;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_APPT_ID;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWDATE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWDOC;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWNAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NEWTIME;
 
 import java.time.LocalDate;
@@ -26,9 +25,14 @@ public class EditApptCommandParser {
      * @throws ParseException if the user input does not conform the expected format
      */
     public EditApptCommand parse(String args) throws ParseException {
+        if (args.contains("newn/")) {
+            throw new ParseException("Editing patient name is not supported. "
+                    + "Delete the appointment and add a new one instead.");
+        }
+
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args,
                 PREFIX_APPT_ID,
-                PREFIX_NEWDATE, PREFIX_NEWTIME, PREFIX_NEWDOC, PREFIX_NEWNAME);
+                PREFIX_NEWDATE, PREFIX_NEWTIME, PREFIX_NEWDOC);
 
         if (argMultimap.getValue(PREFIX_APPT_ID).isEmpty() || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException("Missing required fields to identify the appointment! "
@@ -50,13 +54,9 @@ public class EditApptCommandParser {
         String newDoc = argMultimap.getValue(PREFIX_NEWDOC).map(String::trim).orElse(null);
         String newDate = argMultimap.getValue(PREFIX_NEWDATE).map(String::trim).orElse(null);
         String newTime = argMultimap.getValue(PREFIX_NEWTIME).map(String::trim).orElse(null);
-        String newPat = argMultimap.getValue(PREFIX_NEWNAME).map(String::trim).orElse(null);
 
         if ("".equals(newDoc)) {
             throw new ParseException("Doctor name cannot be empty.");
-        }
-        if ("".equals(newPat)) {
-            throw new ParseException("Patient name cannot be empty.");
         }
 
         if (newDate != null) {
@@ -79,6 +79,6 @@ public class EditApptCommandParser {
             }
         }
 
-        return new EditApptCommand(apptId, newPat, newDoc, newDate, newTime);
+        return new EditApptCommand(apptId, newDoc, newDate, newTime);
     }
 }
