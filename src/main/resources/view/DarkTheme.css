@@ -205,7 +205,6 @@
 
 .menu-bar {
     -fx-background-color: -menu-bar;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 10);
 }
 
 .menu-bar .label {

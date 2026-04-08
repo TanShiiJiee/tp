@@ -30,6 +30,10 @@ public class Doctor extends Person {
         return docId;
     }
 
+    @Override
+    public String getRoleTag() {
+        return "Doctor";
+    }
 
     public static void setIdTracker(int nextIdValue) {
         nextId = nextIdValue;

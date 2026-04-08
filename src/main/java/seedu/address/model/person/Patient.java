@@ -24,6 +24,11 @@ public class Patient extends Person {
     }
 
     @Override
+    public String getRoleTag() {
+        return "Patient";
+    }
+
+    @Override
     public boolean isSamePerson(Person otherPerson) {
         if (otherPerson == this) {
             return true;
