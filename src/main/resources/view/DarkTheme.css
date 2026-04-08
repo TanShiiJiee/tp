@@ -1,13 +1,12 @@
 .root {
-    -menu-bar: #193b68;
-    -background: #f3f8ff;
-    -borders: #dde8f8;
-    -even-card: white;
-    -odd-card: white;
-    -status-bar: #d5e6ff;
-    -dark-text: #193b68;
-    -normal-text: #6f85a4;
-    -light-text: #dde8f8;
+    -menu-bar:      #193b68;
+    -background:    #f3f8ff;
+    -borders:       #dde8f8;
+    -filled-card:   white;
+    -status-bar:    #d5e6ff;
+    -dark-text:     #193b68;
+    -normal-text:   #6f85a4;
+    -light-text:    #dde8f8;
 }
 
 .background {
@@ -112,16 +111,9 @@
 }
 
 .list-cell:filled {
-    -fx-border-width: 0 0 5 0;
-    -fx-border-color: -borders;
-}
-
-.list-cell:filled:even {
-    -fx-background-color: -even-card;
-}
-
-.list-cell:filled:odd {
-    -fx-background-color: -odd-card;
+    -fx-background-color: -filled-card;
+    -fx-border-width: 0 0 2 0;
+    -fx-border-color: derive(-borders, 10%);
 }
 
 .list-cell:filled:selected {
@@ -213,6 +205,7 @@
 
 .menu-bar {
     -fx-background-color: -menu-bar;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 10);
 }
 
 .menu-bar .label {
@@ -357,8 +350,8 @@
 
 #cardPane {
     -fx-background-color: transparent;
-    -fx-border-width: 0 0 1 0;
-    -fx-border-color: -background;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-color: -borders;
 }
 
 #commandTypeLabel {
