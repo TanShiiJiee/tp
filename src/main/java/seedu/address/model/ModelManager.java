@@ -5,6 +5,7 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalTime;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -257,6 +258,10 @@ public class ModelManager implements Model {
         String finalTime = (newTime != null) ? newTime : oldTime;
 
         Appointment editedAppt = new Appointment(finalDoc, finalPat, finalDate, finalTime);
+
+        if (LocalTime.parse(finalTime).getMinute() % 30 != 0) {
+            throw new IOException("Please choose a valid timeslot.");
+        }
 
         if (newPat != null && !hasPatientWithName(newPat)) {
             throw new IOException("The new patient '" + newPat + "' does not exist in the Address Book.");

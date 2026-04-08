@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,6 +34,7 @@ public class ScheduleManager {
      * @throws IllegalArgumentException if the date is not found for the doctor.
      */
     public static Map<String, String> getScheduleIgnoreCase(String doctor, String date) {
+
         try {
             Map<String, Object> data = readScheduleFile();
 
@@ -44,6 +49,7 @@ public class ScheduleManager {
             }
 
             return doctorSchedule.get(date);
+
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -54,14 +60,24 @@ public class ScheduleManager {
      * Adds a new doctor to the schedule with default time slots for the next 7 days.
      */
     public static void addDoctorSchedule(String doctorName) {
+
         try {
             ObjectMapper mapper = new ObjectMapper();
             File file = new File(FILE_PATH);
+
             file.getParentFile().mkdirs();
+            if (!file.exists() || file.length() == 0) {
+                mapper.writeValue(file, new HashMap<>());
+            }
+
             LocalDate today = LocalDate.now();
 
             Map<String, Object> data = readScheduleFile();
             rollScheduleForwardIfNeeded(data, today);
+
+            if (data.containsKey(doctorName)) {
+                return; // already exists
+            }
 
             if (findDoctorKey(data, doctorName) != null) {
                 return;
@@ -150,6 +166,23 @@ public class ScheduleManager {
         String patName = appt.getPatName();
         String date = appt.getDate();
         String time = appt.getTime();
+        boolean found = false;
+
+        if (!isValidDate(date)) {
+            throw new IOException("Please input a valid date. The date must be formatted as YYYY-MM-DD");
+        }
+        //checks if date is within 7 days
+        LocalDate apptDate = LocalDate.parse(date);
+        LocalDate today = LocalDate.now();
+        LocalDate sevenDaysLater = today.plusDays(7);
+
+        if (apptDate.isBefore(today) || apptDate.isAfter(sevenDaysLater)) {
+            throw new IOException("Appointment date must be within 7 days from today!");
+        }
+
+        if (!isValidTime(time)) {
+            throw new IOException("Please input a valid time. Time must be formatted as HH:MM");
+        }
 
         ObjectMapper mapper = new ObjectMapper();
         File file = new File(FILE_PATH);
@@ -163,41 +196,119 @@ public class ScheduleManager {
             }
 
             Map<String, String> slots = doctorSchedule.get(date);
-            slots.put(time, patName);
-            mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
-        }
+            TreeMap<String, Object> sortedSlots = new TreeMap<>(slots);
 
+            LocalTime apptTime = LocalTime.parse(time);
+            LocalTime firstTime = LocalTime.parse(sortedSlots.firstKey());
+            LocalTime lastTime = LocalTime.parse(sortedSlots.lastKey());
+
+            if (apptTime.isBefore(firstTime) || apptTime.isAfter(lastTime)) {
+                throw new IOException("Please choose a time within operating hours");
+            }
+
+            //Formats the input into the ormat of json keys, to prevent dummy entries/overwrites
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            LocalTime parsedTime = LocalTime.parse(time, formatter);
+            String standardizedTime = parsedTime.format(formatter);
+
+            if (!slots.containsKey(standardizedTime)) {
+                throw new IOException("The time " + time + " is not a valid 30-minute slot for this doctor.");
+            }
+
+            if (slots.get(standardizedTime) == null) {
+                slots.put(standardizedTime, patName);
+                found = true;
+                mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
+            } else {
+                throw new IOException("This slot is already booked. "
+                        + "Please edit the appointment if you wish to change it");
+            }
+
+        } else {
+            throw new IOException("Doctor not registered");
+
+        }
+        mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
         System.out.println("sched added appt");
+
+    }
+
+    /**
+     * Private helper method to validate the input date string
+     * @param date
+     * @return true if the date is correctly formatted, false if it is not
+     */
+    private static boolean isValidDate(String date) {
+        try {
+            LocalDate formattedDate = LocalDate.parse(date);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Private helper method to validate the time string
+     * @param time
+     * @return true if the time is formatted correctly
+     */
+    private static boolean isValidTime(String time) {
+        try {
+            LocalTime formattedDate = LocalTime.parse(time);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
     }
 
     /**
      * deletes an appointment according to the time and date from a doctor's schedule
      * @param appt
      */
-    public static void delAppt(Appointment appt) {
+    public static void delAppt(Appointment appt) throws IOException {
         String doctorName = appt.getDocName();
+        String pat = appt.getPatName();
         String date = appt.getDate();
         String time = appt.getTime();
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            File file = new File(FILE_PATH);
-            Map<String, Object> data = readScheduleFile();
 
-            String matchedDoctor = findDoctorKey(data, doctorName);
-            if (matchedDoctor != null) {
-                Map<String, Map<String, String>> doctorSchedule = getDoctorSchedule(data, matchedDoctor);
+        Map<String, Object> data = readScheduleFile();
+        String matchedDoctor = findDoctorKey(data, doctorName);
 
-                if (!doctorSchedule.containsKey(date)) {
-                    throw new IOException("Date not found!");
-                }
-
-                Map<String, String> slots = doctorSchedule.get(date);
-                slots.put(time, null);
-                mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (matchedDoctor == null) {
+            throw new IOException("Doctor not registered");
         }
+
+        Map<String, Map<String, String>> doctorSchedule = getDoctorSchedule(data, matchedDoctor);
+        if (!doctorSchedule.containsKey(date)) {
+            throw new IOException("Date not found! Please choose a date within 7 days of today.");
+        }
+
+        Map<String, String> slots = doctorSchedule.get(date);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        String standardizedTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("H:mm")).format(formatter);
+
+        TreeMap<String, String> sortedSlots = new TreeMap<>(slots);
+        LocalTime apptTime = LocalTime.parse(standardizedTime);
+        if (apptTime.isBefore(LocalTime.parse(sortedSlots.firstKey()))
+                || apptTime.isAfter(LocalTime.parse(sortedSlots.lastKey()))) {
+            throw new IOException("Please choose a time within operating hours");
+        }
+
+        if (!slots.containsKey(standardizedTime)) {
+            throw new IOException("There is no such time slot.");
+        }
+
+        String currentOccupant = slots.get(standardizedTime);
+        if (currentOccupant == null || !currentOccupant.equalsIgnoreCase(pat)) {
+            throw new IOException("No such appointment exists.");
+        }
+
+        slots.put(standardizedTime, null);
+        ObjectMapper mapper = new ObjectMapper();
+        File file = new File(FILE_PATH);
+        mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
+
     }
 
     /**
@@ -208,7 +319,6 @@ public class ScheduleManager {
         if (!file.exists() || file.length() == 0) {
             return null;
         }
-
         Map<String, Object> data = readScheduleFile();
         String matchedDoctor = findDoctorKey(data, doctorName);
 
