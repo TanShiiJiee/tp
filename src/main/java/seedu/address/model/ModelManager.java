@@ -191,7 +191,7 @@ public class ModelManager implements Model {
 
     private void deletePatientByAppt(Patient patient) {
         for (Appointment appt : patient.getApptList()) {
-            ScheduleManager.delAppt(appt);
+            ScheduleManager.removeApptIfExists(appt);
         }
     }
 

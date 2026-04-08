@@ -115,7 +115,7 @@ public class ScheduleManager {
         data.put(LAST_UPDATED_KEY, today.toString());
 
         mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
-    } 
+    }
 
     /**
      * Removes a doctor's schedule entry from schedule.json.
@@ -340,6 +340,56 @@ public class ScheduleManager {
         File file = new File(FILE_PATH);
         mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
 
+    }
+
+    // This method was assisted by Copilot as we ran into an IO Exception error in ModelManager's
+    // deletePatientByAppt unexpectedly.
+    /**
+     * Removes a valid existing appointment as a helper.
+     *
+     * @param appt the appointment to remove.
+     */
+    public static void removeApptIfExists(Appointment appt) {
+        try {
+            String doctorName = appt.getDocName();
+            String pat = appt.getPatName();
+            String date = appt.getDate();
+            String time = appt.getTime();
+
+            Map<String, Object> data = readScheduleFile();
+            String matchedDoctor = findDoctorKey(data, doctorName);
+
+            if (matchedDoctor == null) {
+                return;
+            }
+
+            Map<String, Object> doctorSchedule = getDoctorSchedule(data, matchedDoctor);
+            if (!doctorSchedule.containsKey(date)) {
+                return;
+            }
+
+            Map<String, String> slots = getDateSlots(doctorSchedule, date);
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            String standardizedTime = LocalTime.parse(time,
+                    DateTimeFormatter.ofPattern("H:mm")).format(formatter);
+
+            if (!slots.containsKey(standardizedTime)) {
+                return;
+            }
+
+            String currentOccupant = slots.get(standardizedTime);
+            if (currentOccupant == null || !currentOccupant.equalsIgnoreCase(pat)) {
+                return;
+            }
+
+            slots.put(standardizedTime, null);
+            ObjectMapper mapper = new ObjectMapper();
+            File file = new File(FILE_PATH);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
+        } catch (IOException e) {
+            System.err.println("Warning: could not clean up schedule entry: " + e.getMessage());
+        }
     }
 
     /**

@@ -56,7 +56,7 @@ public class AddDocCommand extends Command {
 
         model.addDoctor(toAdd);
         try {
-            ScheduleManager.addDoctorSchedule(toAdd.getName().fullName);
+            ScheduleManager.addDoctorSchedule(toAdd);
         } catch (java.io.IOException e) {
             throw new CommandException(Messages.MESSAGE_SCHEDULE_UPDATE_FAILED);
         }
