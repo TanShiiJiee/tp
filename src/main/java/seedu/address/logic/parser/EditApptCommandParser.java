@@ -56,7 +56,17 @@ public class EditApptCommandParser {
         String newTime = argMultimap.getValue(PREFIX_NEWTIME).map(String::trim).orElse(null);
 
         if ("".equals(newDoc)) {
-            throw new ParseException("Doctor name cannot be empty.");
+            throw new ParseException("Doctor id cannot be empty.");
+        }
+        if (newDoc != null) {
+            try {
+                int parsed = Integer.parseInt(newDoc);
+                if (parsed <= 0) {
+                    throw new ParseException("Doctor id must be a positive integer.");
+                }
+            } catch (NumberFormatException e) {
+                throw new ParseException("Doctor id must be a positive integer.");
+            }
         }
 
         if (newDate != null) {

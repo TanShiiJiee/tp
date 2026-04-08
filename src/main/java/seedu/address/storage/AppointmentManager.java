@@ -2,8 +2,12 @@ package seedu.address.storage;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -20,6 +24,8 @@ public class AppointmentManager {
     // Use field visibility so AppointmentData can stay as a private DTO without getters/setters.
     private static final ObjectMapper mapper = new ObjectMapper()
             .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+    private static final DateTimeFormatter INPUT_TIME_FORMAT = DateTimeFormatter.ofPattern("H:mm");
+    private static final DateTimeFormatter STORAGE_TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
 
     static {
         initialise();
@@ -57,7 +63,8 @@ public class AppointmentManager {
                 .orElse(-1) + 1;
 
         data.put(String.valueOf(nextId),
-                new AppointmentData(appt.getDocName(), appt.getPatName(), appt.getDate(), appt.getTime()));
+                new AppointmentData(appt.getDocId(), appt.getDocName(), appt.getPatName(),
+                        appt.getDate(), normalizeTime(appt.getTime())));
         writeAppointments(data);
         appt.setApptID(nextId);
         return nextId;
@@ -76,7 +83,30 @@ public class AppointmentManager {
             return null;
         }
 
-        return new Appointment(record.doctorName, record.patientName, record.date, record.time, apptId);
+        return new Appointment(record.doctorId != null ? record.doctorId : Appointment.UNASSIGNED_ID,
+                record.doctorName, record.patientName, record.date, record.time, apptId);
+    }
+
+    /**
+     * Finds the appointment id for a given schedule slot.
+     *
+     * @return appointment id, or {@code null} if not found.
+     */
+    public static Integer findAppointmentIdBySlot(int doctorId, String date, String time) throws IOException {
+        String normalizedTime = normalizeTime(time);
+        Map<String, AppointmentData> data = readAppointments();
+        for (Map.Entry<String, AppointmentData> entry : data.entrySet()) {
+            AppointmentData record = entry.getValue();
+            if (record == null || record.doctorId == null) {
+                continue;
+            }
+            if (record.doctorId == doctorId
+                    && Objects.equals(record.date, date)
+                    && Objects.equals(record.time, normalizedTime)) {
+                return Integer.parseInt(entry.getKey());
+            }
+        }
+        return null;
     }
 
     /**
@@ -92,7 +122,8 @@ public class AppointmentManager {
             throw new IOException("Appointment id not found: " + apptId);
         }
 
-        data.put(key, new AppointmentData(appt.getDocName(), appt.getPatName(), appt.getDate(), appt.getTime()));
+        data.put(key, new AppointmentData(appt.getDocId(), appt.getDocName(), appt.getPatName(),
+                appt.getDate(), normalizeTime(appt.getTime())));
         writeAppointments(data);
     }
 
@@ -129,6 +160,7 @@ public class AppointmentManager {
     }
 
     private static final class AppointmentData {
+        private Integer doctorId;
         private String doctorName;
         private String patientName;
         private String date;
@@ -136,11 +168,20 @@ public class AppointmentManager {
 
         public AppointmentData() {}
 
-        public AppointmentData(String doctorName, String patientName, String date, String time) {
+        public AppointmentData(Integer doctorId, String doctorName, String patientName, String date, String time) {
+            this.doctorId = doctorId;
             this.doctorName = doctorName;
             this.patientName = patientName;
             this.date = date;
             this.time = time;
+        }
+    }
+
+    private static String normalizeTime(String time) throws IOException {
+        try {
+            return LocalTime.parse(time, INPUT_TIME_FORMAT).format(STORAGE_TIME_FORMAT);
+        } catch (DateTimeParseException e) {
+            throw new IOException("Please input a valid time. Time must be formatted as H:MM (e.g. 9:00 or 09:00)");
         }
     }
 }

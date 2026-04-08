@@ -2,7 +2,7 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR_ID;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TIME;
 
@@ -21,12 +21,12 @@ public class AddApptCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Adds an Appointment for a person at the specified date and time.\n"
             + "Parameters: "
-            + PREFIX_DOCTOR + " DOCTOR NAME"
+            + PREFIX_DOCTOR_ID + " DOCTOR_ID"
             + PREFIX_NAME + " NAME"
             + PREFIX_DATE + " DATE (yyyy-mm-dd)"
             + PREFIX_TIME + " TIME (H:MM)\n"
             + "Example: " + COMMAND_WORD + " "
-            + PREFIX_DOCTOR + "Sally Tan"
+            + PREFIX_DOCTOR_ID + "1"
             + PREFIX_NAME + " John Doe "
             + PREFIX_DATE + " 2026-03-11 "
             + PREFIX_TIME + " 9:00 ";

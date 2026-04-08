@@ -5,10 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,29 +30,60 @@ public class EditApptCommandTest {
     private static final String SCHEDULE_FILE_PATH = "data/schedule.json";
     private static final String APPT_FILE_PATH = "data/appointments.json";
     private static final String DOCTOR_NAME = "John Tan";
+    private static final int DOCTOR_ID = 1;
     private static final String PATIENT_NAME = "Jane Doe";
     private static final int APPT_ID = 1;
 
     private LocalDate date;
+    private byte[] scheduleBackup;
+    private byte[] apptBackup;
+    private boolean scheduleExisted;
+    private boolean apptExisted;
 
     @BeforeEach
     public void setup() throws Exception {
+        File scheduleFile = new File(SCHEDULE_FILE_PATH);
+        scheduleExisted = scheduleFile.exists();
+        scheduleBackup = scheduleExisted ? Files.readAllBytes(scheduleFile.toPath()) : null;
+
+        File apptFile = new File(APPT_FILE_PATH);
+        apptExisted = apptFile.exists();
+        apptBackup = apptExisted ? Files.readAllBytes(apptFile.toPath()) : null;
+
         date = LocalDate.now().plusDays(1);
         Map<String, String> slots = new LinkedHashMap<>();
         slots.put("09:00", null);
         slots.put("09:30", PATIENT_NAME);
         slots.put("10:00", null);
-        writeScheduleWithSlots(DOCTOR_NAME, date.toString(), slots);
-        writeAppointmentsWithId(APPT_ID, DOCTOR_NAME, PATIENT_NAME, date.toString(), "09:30");
+        writeScheduleWithSlots(DOCTOR_ID, DOCTOR_NAME, date.toString(), slots);
+        writeAppointmentsWithId(APPT_ID, DOCTOR_ID, DOCTOR_NAME, PATIENT_NAME, date.toString(), "09:30");
+    }
+
+    @AfterEach
+    public void cleanup() throws Exception {
+        File scheduleFile = new File(SCHEDULE_FILE_PATH);
+        if (scheduleExisted) {
+            Files.write(scheduleFile.toPath(), scheduleBackup);
+        } else {
+            scheduleFile.delete();
+        }
+
+        File apptFile = new File(APPT_FILE_PATH);
+        if (apptExisted) {
+            Files.write(apptFile.toPath(), apptBackup);
+        } else {
+            apptFile.delete();
+        }
     }
 
     @Test
     public void execute_validId_success() throws Exception {
         Model model = new ModelManager();
-        Doctor doctor = new DoctorBuilder().withName(DOCTOR_NAME).build();
+        Doctor doctor = new DoctorBuilder().withName(DOCTOR_NAME).withDocId(DOCTOR_ID).build();
         Patient patient = new PatientBuilder().withName(PATIENT_NAME).build();
         model.addDoctor(doctor);
         model.addPatient(patient);
+        patient.addAppt(new Appointment(DOCTOR_ID, DOCTOR_NAME, PATIENT_NAME, date.toString(), "09:30", APPT_ID));
 
         EditApptCommand command = new EditApptCommand(APPT_ID, null, null, "10:00");
         command.execute(model);
@@ -58,6 +91,8 @@ public class EditApptCommandTest {
         Appointment updated = AppointmentManager.getAppointmentById(APPT_ID);
         assertNotNull(updated);
         assertEquals("10:00", updated.getTime());
+        assertEquals(1, patient.getApptList().size());
+        assertEquals("10:00", patient.getApptList().get(0).getTime());
 
         Map<String, String> schedule = ScheduleManager.getScheduleIgnoreCase(DOCTOR_NAME, date.toString());
         assertEquals(null, schedule.get("09:30"));
@@ -67,21 +102,52 @@ public class EditApptCommandTest {
     @Test
     public void execute_invalidTime_showsError() throws Exception {
         Model model = new ModelManager();
-        Doctor doctor = new DoctorBuilder().withName(DOCTOR_NAME).build();
+        Doctor doctor = new DoctorBuilder().withName(DOCTOR_NAME).withDocId(DOCTOR_ID).build();
         Patient patient = new PatientBuilder().withName(PATIENT_NAME).build();
         model.addDoctor(doctor);
         model.addPatient(patient);
+        patient.addAppt(new Appointment(DOCTOR_ID, DOCTOR_NAME, PATIENT_NAME, date.toString(), "09:30", APPT_ID));
 
         EditApptCommand command = new EditApptCommand(APPT_ID, null, null, "110:00");
         assertThrows(Exception.class, () -> command.execute(model));
     }
 
-    private void writeScheduleWithSlots(String doctorName, String dateValue, Map<String, String> slots)
+    @Test
+    public void execute_invalidDoctorId_showsError() throws Exception {
+        Model model = new ModelManager();
+        Doctor doctor = new DoctorBuilder().withName(DOCTOR_NAME).withDocId(DOCTOR_ID).build();
+        Patient patient = new PatientBuilder().withName(PATIENT_NAME).build();
+        model.addDoctor(doctor);
+        model.addPatient(patient);
+        patient.addAppt(new Appointment(DOCTOR_ID, DOCTOR_NAME, PATIENT_NAME, date.toString(), "09:30", APPT_ID));
+
+        EditApptCommand command = new EditApptCommand(APPT_ID, "999", null, null);
+        assertThrows(Exception.class, () -> command.execute(model));
+    }
+
+    @Test
+    public void execute_invalidDate_showsError() throws Exception {
+        Model model = new ModelManager();
+        Doctor doctor = new DoctorBuilder().withName(DOCTOR_NAME).withDocId(DOCTOR_ID).build();
+        Patient patient = new PatientBuilder().withName(PATIENT_NAME).build();
+        model.addDoctor(doctor);
+        model.addPatient(patient);
+        patient.addAppt(new Appointment(DOCTOR_ID, DOCTOR_NAME, PATIENT_NAME, date.toString(), "09:30", APPT_ID));
+
+        EditApptCommand command = new EditApptCommand(APPT_ID, null, "2026-13-01", null);
+        assertThrows(Exception.class, () -> command.execute(model));
+    }
+
+    private void writeScheduleWithSlots(int doctorId, String doctorName, String dateValue, Map<String, String> slots)
             throws Exception {
-        Map<String, Map<String, Map<String, String>>> data = new LinkedHashMap<>();
-        Map<String, Map<String, String>> doctorSchedule = new LinkedHashMap<>();
+        Map<String, Object> data = new LinkedHashMap<>();
+        data.put("__lastUpdated", LocalDate.now().toString());
+
+        Map<String, Object> doctorSchedule = new LinkedHashMap<>();
+        doctorSchedule.put("docId", doctorId);
+        doctorSchedule.put("doctorName", doctorName);
         doctorSchedule.put(dateValue, new LinkedHashMap<>(slots));
-        data.put(doctorName, doctorSchedule);
+        data.put("doc_" + doctorId, doctorSchedule);
 
         ObjectMapper mapper = new ObjectMapper();
         File file = new File(SCHEDULE_FILE_PATH);
@@ -89,10 +155,11 @@ public class EditApptCommandTest {
         mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
     }
 
-    private void writeAppointmentsWithId(int apptId, String doctorName, String patientName,
+    private void writeAppointmentsWithId(int apptId, int doctorId, String doctorName, String patientName,
                                          String dateValue, String timeValue) throws Exception {
-        Map<String, Map<String, String>> data = new LinkedHashMap<>();
-        Map<String, String> entry = new LinkedHashMap<>();
+        Map<String, Map<String, Object>> data = new LinkedHashMap<>();
+        Map<String, Object> entry = new LinkedHashMap<>();
+        entry.put("doctorId", doctorId);
         entry.put("doctorName", doctorName);
         entry.put("patientName", patientName);
         entry.put("date", dateValue);

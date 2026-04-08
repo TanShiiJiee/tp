@@ -24,7 +24,7 @@ public class EditApptCommand extends Command {
             + " Identifies the appointment by id."
             + "Paramters: "
             + PREFIX_APPT_ID + "APPOINTMENT_ID\n"
-            + "[" + PREFIX_NEWDOC + "NEW_DOCTOR_NAME] "
+            + "[" + PREFIX_NEWDOC + "NEW_DOCTOR_ID] "
             + "[" + PREFIX_NEWDATE + "NEW_DATE] "
             + "[" + PREFIX_NEWTIME + "NEW_TIME]\n"
             + "Example: " + COMMAND_WORD + " "

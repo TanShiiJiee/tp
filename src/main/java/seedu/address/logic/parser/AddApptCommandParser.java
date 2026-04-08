@@ -2,7 +2,7 @@ package seedu.address.logic.parser;
 
 import static seedu.address.logic.commands.AddApptCommand.MESSAGE_USAGE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DATE;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DOCTOR_ID;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TIME;
 
@@ -23,10 +23,10 @@ public class AddApptCommandParser {
      */
     public AddApptCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_DATE, PREFIX_TIME,
-                                                                    PREFIX_DOCTOR, PREFIX_NAME);
+                                                                    PREFIX_DOCTOR_ID, PREFIX_NAME);
 
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_DOCTOR, PREFIX_NAME, PREFIX_DATE, PREFIX_TIME)
+        if (!arePrefixesPresent(argMultimap, PREFIX_DOCTOR_ID, PREFIX_NAME, PREFIX_DATE, PREFIX_TIME)
                 || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_USAGE));
         }
@@ -35,8 +35,19 @@ public class AddApptCommandParser {
         String person = argMultimap.getValue(PREFIX_NAME).get();
         String date = argMultimap.getValue(PREFIX_DATE).get();
         String time = argMultimap.getValue(PREFIX_TIME).get();
-        String doctor = argMultimap.getValue(PREFIX_DOCTOR).get();
-        Appointment appt = new Appointment(doctor, person, date, time);
+
+        String doctorIdValue = argMultimap.getValue(PREFIX_DOCTOR_ID).get().trim();
+        int doctorId;
+        try {
+            doctorId = Integer.parseInt(doctorIdValue);
+        } catch (NumberFormatException e) {
+            throw new ParseException("Doctor id must be a positive integer.");
+        }
+        if (doctorId <= 0) {
+            throw new ParseException("Doctor id must be a positive integer.");
+        }
+
+        Appointment appt = new Appointment(doctorId, person, date, time);
 
         return new AddApptCommand(appt);
     }
