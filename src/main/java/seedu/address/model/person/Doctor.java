@@ -6,6 +6,8 @@ package seedu.address.model.person;
  */
 public class Doctor extends Person {
 
+    private static final String SCHEDULE_KEY_PREFIX = "doc_";
+
     private static int nextId = 1;
 
     private final int docId;
@@ -30,7 +32,9 @@ public class Doctor extends Person {
         return docId;
     }
 
-
+    /**
+     * Sets the starting value for the doctor ID counter.
+     */
     public static void setIdTracker(int nextIdValue) {
         nextId = nextIdValue;
     }
@@ -39,8 +43,7 @@ public class Doctor extends Person {
      * Returns the key to access the relevant doctor with in schedule.json.
      */
     public String getDocIdFromSchedule() {
-        // format suggested by copilot (i.e. doc_id for simplicity)
-        return "doc_" + docId;
+        return SCHEDULE_KEY_PREFIX + docId;
     }
 
     /**
@@ -64,8 +67,7 @@ public class Doctor extends Person {
             return false;
         }
 
-        return otherPerson != null
-                && otherPerson.getName().fullName.equalsIgnoreCase(getName().fullName)
+        return otherPerson.getName().fullName.equalsIgnoreCase(getName().fullName)
                 && (otherPerson.getPhone().equals(getPhone())
                     || otherPerson.getEmail().equals(getEmail()));
     }

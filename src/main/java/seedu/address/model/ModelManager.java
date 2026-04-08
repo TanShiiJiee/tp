@@ -198,7 +198,7 @@ public class ModelManager implements Model {
      */
     private void deletePatientByAppt(Patient patient) throws IOException {
         for (Appointment appt : patient.getApptList()) {
-            ScheduleManager.delAppt(appt);
+            ScheduleManager.removeApptIfExists(appt);
         }
     }
 
@@ -240,7 +240,6 @@ public class ModelManager implements Model {
                 .orElseThrow(() -> new IOException("Patient not found: " + appt.getPatName()));
 
         patient.addAppt(appt);
-        System.out.println("Model manager appt added to patient");
         ScheduleManager.addAppt(appt);
 
     }

@@ -91,35 +91,30 @@ public class ScheduleManager {
     /**
      * Adds a new doctor to the schedule with default time slots for the next 7 days.
      */
-    public static void addDoctorSchedule(Doctor doctor) {
+    public static void addDoctorSchedule(Doctor doctor) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        File file = new File(FILE_PATH);
 
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            File file = new File(FILE_PATH);
-
-            file.getParentFile().mkdirs();
-            if (!file.exists() || file.length() == 0) {
-                mapper.writeValue(file, new HashMap<>());
-            }
-
-            LocalDate today = LocalDate.now();
-            String doctorKey = doctor.getDocIdFromSchedule();
-
-            Map<String, Object> data = readScheduleFile();
-            rollScheduleForwardIfNeeded(data, today);
-
-            if (data.containsKey(doctorKey)) {
-                updateDoctorMetadata(data, doctorKey, doctor);
-            } else {
-                data.put(doctorKey, createDoctorSchedule(today, doctor));
-            }
-
-            data.put(LAST_UPDATED_KEY, today.toString());
-
-            mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
-        } catch (IOException e) {
-            e.printStackTrace();
+        file.getParentFile().mkdirs();
+        if (!file.exists() || file.length() == 0) {
+            mapper.writeValue(file, new HashMap<>());
         }
+
+        LocalDate today = LocalDate.now();
+        String doctorKey = doctor.getDocIdFromSchedule();
+
+        Map<String, Object> data = readScheduleFile();
+        rollScheduleForwardIfNeeded(data, today);
+
+        if (data.containsKey(doctorKey)) {
+            updateDoctorMetadata(data, doctorKey, doctor);
+        } else {
+            data.put(doctorKey, createDoctorSchedule(today, doctor));
+        }
+
+        data.put(LAST_UPDATED_KEY, today.toString());
+
+        mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
     }
 
     /**
@@ -192,8 +187,9 @@ public class ScheduleManager {
     }
 
     /**
-     * books an appointment for the specific doctor
-     * @param appt
+     * Books an appointment for the specified doctor.
+     *
+     * @param appt the appointment to add.
      */
     public static void addAppt(Appointment appt) throws IOException {
         String doctorName = appt.getDocName();
@@ -296,8 +292,9 @@ public class ScheduleManager {
     }
 
     /**
-     * deletes an appointment according to the time and date from a doctor's schedule
-     * @param appt
+     * Deletes an appointment from a doctor's schedule at the given date and time.
+     *
+     * @param appt the appointment to delete.
      */
     public static void delAppt(Appointment appt) throws IOException {
         String doctorName = appt.getDocName();
@@ -343,6 +340,56 @@ public class ScheduleManager {
         File file = new File(FILE_PATH);
         mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
 
+    }
+
+    // This method was assisted by Copilot as we ran into an IO Exception error in ModelManager's
+    // deletePatientByAppt unexpectedly.
+    /**
+     * Removes a valid existing appointment as a helper.
+     *
+     * @param appt the appointment to remove.
+     */
+    public static void removeApptIfExists(Appointment appt) {
+        try {
+            String doctorName = appt.getDocName();
+            String pat = appt.getPatName();
+            String date = appt.getDate();
+            String time = appt.getTime();
+
+            Map<String, Object> data = readScheduleFile();
+            String matchedDoctor = findDoctorKey(data, doctorName);
+
+            if (matchedDoctor == null) {
+                return;
+            }
+
+            Map<String, Object> doctorSchedule = getDoctorSchedule(data, matchedDoctor);
+            if (!doctorSchedule.containsKey(date)) {
+                return;
+            }
+
+            Map<String, String> slots = getDateSlots(doctorSchedule, date);
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            String standardizedTime = LocalTime.parse(time,
+                    DateTimeFormatter.ofPattern("H:mm")).format(formatter);
+
+            if (!slots.containsKey(standardizedTime)) {
+                return;
+            }
+
+            String currentOccupant = slots.get(standardizedTime);
+            if (currentOccupant == null || !currentOccupant.equalsIgnoreCase(pat)) {
+                return;
+            }
+
+            slots.put(standardizedTime, null);
+            ObjectMapper mapper = new ObjectMapper();
+            File file = new File(FILE_PATH);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
+        } catch (IOException e) {
+            System.err.println("Warning: could not clean up schedule entry: " + e.getMessage());
+        }
     }
 
     /**
