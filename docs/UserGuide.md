@@ -257,14 +257,23 @@ Examples:
 * `viewsched d/John Tan id/1 date/2026-04-10` displays John Tan's schedule on 10 Apr 2026.
 * `viewsched d/Alice Lim id/2` displays Alice Lim's schedule for the next 7 days.
 
-Screenshot placeholder: add a single-day schedule panel screenshot here.
-
-Screenshot placeholder: add a weekly schedule panel screenshot here.
-
 Expected output:
 ```
 Schedule for John Tan (ID: 1) on 2026-04-10
 ```
+
+<div class="image-container">
+
+![result for 'Daily Schedule Panel'](images/daily_schedule.png)
+
+</div>
+
+<div class="image-container">
+
+![result for 'Weekly Schedule Panel'](images/weekly_schedule.png)
+
+</div>
+
 
 #### Adding an appointment : `addappt`
 

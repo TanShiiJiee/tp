@@ -50,28 +50,30 @@ public class ViewSchedCommand extends Command {
 
         Doctor doctor = resolveDoctor(model);
         if (doctor == null) {
-            return new CommandResult(MESSAGE_DOCTOR_NOT_FOUND);
+            throw new CommandException(MESSAGE_DOCTOR_NOT_FOUND);
         }
 
         String resolvedDoctorName = doctor.getName().fullName;
         int resolvedDoctorId = doctor.getDocId();
 
-        try {
-            if (date != null) {
-                return executeSingleDay(resolvedDoctorName, resolvedDoctorId);
-            }
-
-            return executeWeekly(resolvedDoctorName, resolvedDoctorId);
-        } catch (IllegalArgumentException e) {
-            return new CommandResult(MESSAGE_DATE_NOT_AVAILABLE);
+        if (date != null) {
+            return executeSingleDay(resolvedDoctorName, resolvedDoctorId);
         }
+
+        return executeWeekly(resolvedDoctorName, resolvedDoctorId);
     }
 
-    private CommandResult executeSingleDay(String resolvedDoctorName, int resolvedDoctorId) {
-        Map<String, String> schedule = ScheduleManager.getScheduleByDocId(resolvedDoctorId, date.toString());
+    private CommandResult executeSingleDay(String resolvedDoctorName, int resolvedDoctorId)
+            throws CommandException {
+        Map<String, String> schedule;
+        try {
+            schedule = ScheduleManager.getScheduleByDocId(resolvedDoctorId, date.toString());
+        } catch (IllegalArgumentException e) {
+            throw new CommandException(MESSAGE_DATE_NOT_AVAILABLE);
+        }
 
         if (schedule == null) {
-            return new CommandResult(MESSAGE_DOCTOR_NOT_FOUND);
+            throw new CommandException(MESSAGE_DATE_NOT_AVAILABLE);
         }
 
         return new CommandResult(
@@ -80,15 +82,20 @@ public class ViewSchedCommand extends Command {
         );
     }
 
-    private CommandResult executeWeekly(String resolvedDoctorName, int resolvedDoctorId) {
+    private CommandResult executeWeekly(String resolvedDoctorName, int resolvedDoctorId) throws CommandException {
         Map<String, Map<String, String>> weeklySchedule = new LinkedHashMap<>();
         LocalDate today = LocalDate.now();
 
         for (int i = 0; i < SCHEDULE_WINDOW_DAYS; i++) {
             LocalDate d = today.plusDays(i);
-            Map<String, String> schedule = ScheduleManager.getScheduleByDocId(resolvedDoctorId, d.toString());
+            Map<String, String> schedule;
+            try {
+                schedule = ScheduleManager.getScheduleByDocId(resolvedDoctorId, d.toString());
+            } catch (IllegalArgumentException e) {
+                throw new CommandException(MESSAGE_DATE_NOT_AVAILABLE);
+            }
             if (schedule == null) {
-                return new CommandResult(MESSAGE_DATE_NOT_AVAILABLE);
+                throw new CommandException(MESSAGE_DATE_NOT_AVAILABLE);
             }
             weeklySchedule.put(d.toString(), schedule);
         }
