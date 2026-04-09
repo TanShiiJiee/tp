@@ -57,7 +57,7 @@ CLInicDesk is optimized for use through a Command Line Interface (CLI) while sti
 <table class="convention-table">
 <tr><th>Convention</th><th>Meaning</th><th>Example</th></tr>
 <tr><td><code>UPPER_CASE</code></td><td>A parameter you supply</td><td><code>adddoc n/NAME</code> → <code>adddoc n/John Doe</code></td></tr>
-<tr><td><code>[square brackets]</code></td><td>Optional field</td><td><code>viewsched d/DOCTOR_NAME [date/YYYY-MM-DD]</code></td></tr>
+<tr><td><code>[square brackets]</code></td><td>Optional field</td><td><code>viewsched d/DOCTOR_NAME id/DOCTOR_ID [date/YYYY-MM-DD]</code></td></tr>
 <tr><td>Any parameter order</td><td>Parameters can appear in any order</td><td><code>n/NAME p/PHONE</code> or <code>p/PHONE n/NAME</code></td></tr>
 </table>
 
@@ -78,16 +78,17 @@ The table below summarises the rules and constraints for all input fields used a
 <tr><td><strong>EMAIL</strong></td><td>Must follow the standard <code>local-part@domain</code> format (e.g. <code>name@example.com</code>).</td></tr>
 <tr><td><strong>ADDRESS</strong></td><td>Any non-blank string, minimum 3 characters.</td></tr>
 <tr><td><strong>INDEX</strong></td><td>A positive integer (1, 2, 3, …) referring to the position in the currently displayed list.</td></tr>
+<tr><td><strong>DOCTOR_ID / PATIENT_ID</strong></td><td>The numeric ID shown on each person's card in the displayed list. Must be a positive integer.</td></tr>
+<tr><td><strong>APPOINTMENT_ID</strong></td><td>The numeric ID returned when an appointment is created via <code>addappt</code>. Must be a non-negative integer.</td></tr>
 <tr><td><strong>DATE</strong> (<code>YYYY-MM-DD</code>)</td><td>Must be in strict ISO 8601 format (e.g. <code>2026-04-10</code>). Must be today or within the next 7 days.</td></tr>
 <tr><td><strong>TIME</strong> (<code>HH:MM</code>)</td><td>Must be one of the half-hourly slots from <code>09:00</code> to <code>16:30</code> (i.e. <code>09:00</code>, <code>09:30</code>, <code>10:00</code>, … <code>16:30</code>).</td></tr>
-<tr><td><strong>DOCTOR_NAME</strong></td><td>Must exactly match an existing doctor's name (case-insensitive).</td></tr>
-<tr><td><strong>PATIENT_NAME</strong></td><td>Must exactly match an existing patient's name (case-insensitive).</td></tr>
+<tr><td><strong>DOCTOR_NAME</strong></td><td>Must exactly match an existing doctor's name (case-insensitive). Used with <code>viewsched</code>.</td></tr>
 </table>
 
 <box type="info" seamless>
 
 **Additional assumptions:**
-* **Doctor duplicate detection:** Two doctors are considered duplicates if they share the same name (case-insensitive) **and** either the same phone number or the same email.
+* **Duplicate detection:** Two doctors (or two patients) are considered duplicates if they share the same name (case-insensitive) **and** either the same phone number or the same email.
 * **Schedule window:** Doctor schedules are displayed and bookable for a rolling 7-day window from today.
 * **Doctor IDs:** Each doctor is automatically assigned a unique, persistent ID that is preserved across edits. IDs are not user-editable.
 * **Patient IDs:** Each patient is automatically assigned a unique, persistent ID that is preserved across edits. IDs are not user-editable.
@@ -240,23 +241,30 @@ Commands for scheduling, modifying, and cancelling appointments, and viewing doc
 
 #### Viewing a doctor's schedule : `viewsched`
 
-Displays all appointment slots for a specific doctor for a week or on a given date, showing whether each slot is available or booked.
+Displays a doctor's schedule in a separate schedule panel, either for a specific date or for the next 7 days.
 
-Format: `viewsched d/DOCTOR_NAME [date/YYYY-MM-DD]`
+Format: `viewsched d/DOCTOR_NAME id/DOCTOR_ID [date/YYYY-MM-DD]`
 
 **Notes:**
-* `DOCTOR_NAME` must match an existing doctor's name. The match is case-insensitive. e.g. `john tan` will match `John Tan`.
+* `DOCTOR_NAME` must match an existing doctor's name. The match is case-insensitive, so `john tan` will match `John Tan`.
+* `DOCTOR_ID` must match the doctor's assigned ID.
 * `DATE` must be in the strict `YYYY-MM-DD` format. Other formats such as `22-02-2026` or `Feb 22 2026` are not accepted.
-* The date cannot be in the past and must be within 7 days of today's date.
-* Appointment slots are displayed in half-hourly intervals from 09:00 to 17:00.
+* If `date/` is omitted, `viewsched` shows the doctor's schedule for the next 7 days starting from today.
+* If you request a date outside the available schedule window, the app shows `No schedule available for this date.`
+* Appointment slots are displayed in half-hourly intervals from 09:00 to 16:30.
+* The schedule panel uses light blocks for available slots and darker blocks for booked slots.
 
 Examples:
-* `viewsched d/John Tan date/2026-04-10` displays John Tan's schedule on 10 Apr 2026.
-* `viewsched d/Alice Lim` displays Alice Lim's schedule for the next 7 days.
+* `viewsched d/John Tan id/1 date/2026-04-10` displays John Tan's schedule on 10 Apr 2026.
+* `viewsched d/Alice Lim id/2` displays Alice Lim's schedule for the next 7 days.
+
+Screenshot placeholder: add a single-day schedule panel screenshot here.
+
+Screenshot placeholder: add a weekly schedule panel screenshot here.
 
 Expected output:
 ```
-Schedule for John Tan on 2026-04-10
+Schedule for John Tan (ID: 1) on 2026-04-10
 ```
 
 #### Adding an appointment : `addappt`
@@ -355,7 +363,7 @@ Examples:
 
 #### Clearing all entries : `clear`
 
-Clears all entries from the app UI temporarily. This does not delete data.
+Clears all entries from the app display temporarily. Use `list` to show all entries again. This does not delete data.
 
 Format: `clear`
 
@@ -441,7 +449,7 @@ Furthermore, certain edits can cause CLInicDesk to behave in unexpected ways (e.
 <tr class="cat-divider">
   <td class="cat-appt" rowspan="4">Appointment<br>Management</td>
   <td><strong>View Schedule</strong></td>
-  <td><code>viewsched d/DOCTOR_NAME [date/YYYY-MM-DD]</code><br>e.g., <code>viewsched d/John Tan date/2026-04-10</code></td>
+  <td><code>viewsched d/DOCTOR_NAME id/DOCTOR_ID [date/YYYY-MM-DD]</code><br>e.g., <code>viewsched d/John Tan id/1 date/2026-04-10</code></td>
 </tr>
 <tr>
   <td><strong>Add Appointment</strong></td>
