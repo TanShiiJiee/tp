@@ -316,8 +316,11 @@ Expected output:
 ```
 Edited appointment!
 ```
-Warnings:
-* Changing a patient name for an appointment is not possible, user will need to delete the appointment and make a new appointment 
+<box type="warning" seamless>
+
+**Warning:** Changing a patient name for an appointment is not possible. Users will need to delete the appointment and make a new one.
+
+</box>
 
 #### Deleting an appointment : `delappt`
 
@@ -336,23 +339,21 @@ Expected output:
 ```
 Appointment deleted!
 ```
-## Editing an appointment : `editappt`
-Edits the details of an existing appointment
-Format : `editappt apptid/APPT_ID (nd/NEW_DOC) (ndate/NEW_DATE) (ntime/NEW_TIME)`
 
-**Notes**
-* Edits the appointment at the old date and time for the old doctor
-* The new fields in brackets are optional, but there must be at least one new field to edit.
-e.g. `editappt apptid/ID ntime/10:00` is acceptable and will rebook the slot to 10am
-for the same patient,but `editappt apptid/ID` is invalid on its own.
+--------------------------------------------------------------------------------------------------------------------
 
-### Listing all persons : `list`
+### General
+
+#### Listing all persons : `list`
 
 Shows a list of all persons (doctors and patients) in the app.
 
 Format: `list`
 
-### Locating persons by name: `find`
+**Notes:**
+* Any invalid or extra parameters added after the command will be ignored, and the `list` command will still work as intended. e.g. `list 3`, `list bla bla` will work.
+
+#### Locating persons by name: `find`
 
 Finds persons whose names contain any of the given keywords.
 
@@ -409,6 +410,7 @@ If your changes to a data file make its format invalid, CLInicDesk will discard 
 Furthermore, certain edits can cause CLInicDesk to behave in unexpected ways (e.g. if a value entered is outside the acceptable range). Therefore, edit the data files only if you are confident that you can update them correctly.
 
 </box>
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## FAQ
