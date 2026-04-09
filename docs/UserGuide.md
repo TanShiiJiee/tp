@@ -10,12 +10,13 @@ CLInicDesk is a desktop application designed for **receptionists at small-scale 
 
 CLInicDesk is optimized for use through a Command Line Interface (CLI) while still providing the convenience of a Graphical User Interface (GUI). CLInicDesk enables receptionists who can type quickly to perform clinic management tasks such as adding patients, viewing doctor availabilities, and booking appointments faster than traditional systems.
 
+**Note:** This app is meant to be used with commands in English only.
 <!-- * Table of Contents -->
 <page-nav-print />
 
 --------------------------------------------------------------------------------------------------------------------
 
-## Quick start
+## Setup Guidelines
 
 <div class="quick-start-steps">
 
@@ -72,10 +73,10 @@ The table below summarises the rules and constraints for all input fields used a
 
 <table class="constraints-table">
 <tr><th>Field</th><th>Constraints</th></tr>
-<tr><td><strong>NAME</strong></td><td>Letters only (including apostrophes and hyphens between words, e.g. <code>O'Brien</code>, <code>Mary-Jane</code>). Case-insensitive for matching (e.g. <code>john doe</code> matches <code>John Doe</code>). Must not be blank.</td></tr>
-<tr><td><strong>PHONE_NUMBER</strong></td><td>Numeric digits only. Must be exactly 8 digits long.</td></tr>
+<tr><td><strong>NAME</strong></td><td>Alphabets, hyphens, apostrophe and/or spaces only. Case-insensitive for matching (e.g. <code>john doe</code> matches <code>John Doe</code>). Must not be blank.</td></tr>
+<tr><td><strong>PHONE_NUMBER</strong></td><td>Numeric digits only. Must be 8 digits long.</td></tr>
 <tr><td><strong>EMAIL</strong></td><td>Must follow the standard <code>local-part@domain</code> format (e.g. <code>name@example.com</code>).</td></tr>
-<tr><td><strong>ADDRESS</strong></td><td>Any non-blank string.</td></tr>
+<tr><td><strong>ADDRESS</strong></td><td>Any non-blank string, minimum 3 characters.</td></tr>
 <tr><td><strong>INDEX</strong></td><td>A positive integer (1, 2, 3, …) referring to the position in the currently displayed list.</td></tr>
 <tr><td><strong>DOCTOR_ID / PATIENT_ID</strong></td><td>The numeric ID shown on each person's card in the displayed list. Must be a positive integer.</td></tr>
 <tr><td><strong>APPOINTMENT_ID</strong></td><td>The numeric ID returned when an appointment is created via <code>addappt</code>. Must be a non-negative integer.</td></tr>
@@ -89,7 +90,9 @@ The table below summarises the rules and constraints for all input fields used a
 **Additional assumptions:**
 * **Duplicate detection:** Two doctors (or two patients) are considered duplicates if they share the same name (case-insensitive) **and** either the same phone number or the same email.
 * **Schedule window:** Doctor schedules are displayed and bookable for a rolling 7-day window from today.
-* **Doctor / Patient IDs:** Each doctor and patient is automatically assigned a unique, persistent ID that is preserved across edits. IDs are not user-editable.
+* **Doctor IDs:** Each doctor is automatically assigned a unique, persistent ID that is preserved across edits. IDs are not user-editable.
+* **Patient IDs:** Each patient is automatically assigned a unique, persistent ID that is preserved across edits. IDs are not user-editable.
+* **Patient duplicate detection:** Two patients are considered duplicates if they share the same name (case-insensitive) **and** the same email.
 
 </box>
 
@@ -106,8 +109,8 @@ Adds a doctor to the app.
 Format: `adddoc n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS`
 
 **Notes:**
-* `NAME` is the name of the doctor. It should not be blank. Only letters, apostrophes, and hyphens are allowed.
-* `PHONE_NUMBER` should only contain numbers and be exactly 8 digits.
+* `NAME` is the name of the doctor. It should not be blank. Only alphabets, followed by hyphens, apostrophe and/or spaces are allowed.
+* `PHONE_NUMBER` should only contain numbers and be 8 digits.
 * `EMAIL` must match the standard email format (e.g. `name@example.com`).
 
 Examples:
@@ -172,8 +175,8 @@ Adds a patient to the app.
 Format: `addpat n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS`
 
 **Notes:**
-* `NAME` is the name of the patient. It should not be blank. Only letters, apostrophes, and hyphens are allowed.
-* `PHONE_NUMBER` should only contain numbers and be exactly 8 digits.
+* `NAME` is the name of the patient. It should not be blank. Only alphabets, followed by hyphens, apostrophe and/or spaces are allowed.
+* `PHONE_NUMBER` should only contain numbers and be 8 digits.
 * `EMAIL` must match the standard email format (e.g. `name@example.com`).
 
 Examples:
@@ -310,54 +313,41 @@ Examples:
 
 Expected output:
 ```
-Appointment deleted!
+Edited Patient: John Doe; Phone: 91234567; Email: johndoe@example.com; Address: 123456; Tags:
 ```
+## Editing an appointment : `editappt`
+Edits the details of an existing appointment
+Format : `editappt d/OLD_DOCTOR date/OLD_DATE time/OLD_TIME (n/NEW_NAME) (d/NEW_DOC) (date/NEW_DATE) (time/NEW_TIME)`
 
---------------------------------------------------------------------------------------------------------------------
+**Notes**
+* Edits the appointment at the old date and time for the old doctor
+* The new fields in brackets are optional, but there must be at least one new field to edit.
+e.g. `editappt d/Louis date/2026-03-28 time/09:00 time/10:00` is acceptable and will rebook the slot to 10am
+for the same patient,but `editappt d/Louis date/2026-03-28 time/09:00` is invalid on its own.
 
-### General commands
-
-#### Viewing help : `help`
-
-Shows a message explaining how to access the help page.
-
-<div class="image-container">
-
-![help message](images/helpMessageTwo.png)
-
-</div>
-
-Format: `help`
-
-#### Listing all persons : `list`
+### Listing all persons : `list`
 
 Shows a list of all persons (doctors and patients) in the app.
 
 Format: `list`
 
-#### Locating persons by name : `find`
+### Locating persons by name: `find`
 
 Finds persons whose names contain any of the given keywords.
 
 Format: `find KEYWORD [MORE_KEYWORDS]`
 
-**Notes:**
-* The search is case-insensitive. e.g. `hans` will match `Hans`.
-* The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`.
+* The search is case-insensitive. e.g `hans` will match `Hans`
+* The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
 * Only the name is searched.
-* Only full words will be matched. e.g. `Han` will not match `Hans`.
+* Only full words will be matched e.g. `Han` will not match `Hans`
 * Persons matching at least one keyword will be returned (i.e. `OR` search).
-  e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`.
+  e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
 
 Examples:
-* `find John` returns `john` and `John Doe`.
-* `find alex david` returns `Alex Yeoh`, `David Li`.
-
-<div class="image-container">
-
-![result for 'find alex david'](images/findAlexDavidResult.png)
-
-</div>
+* `find John` returns `john` and `John Doe`
+* `find alex david` returns `Alex Yeoh`, `David Li`<br>
+  ![result for 'find alex david'](images/findAlexDavidResult.png)
 
 #### Clearing all entries : `clear`
 
@@ -394,7 +384,6 @@ If your changes to a data file make its format invalid, CLInicDesk will discard 
 Furthermore, certain edits can cause CLInicDesk to behave in unexpected ways (e.g. if a value entered is outside the acceptable range). Therefore, edit the data files only if you are confident that you can update them correctly.
 
 </box>
-
 --------------------------------------------------------------------------------------------------------------------
 
 ## FAQ
