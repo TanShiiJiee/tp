@@ -409,9 +409,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1. Receptionist enters the view schedule command with a doctor name and optionally a date.
-2. System validates the doctor name (and, if exists, the date).
-3. System displays all half-hourly slots for that doctor for next 7 days or on a specific date, each marked as Available or Booked.
+1. Receptionist enters the view schedule command with a doctor name, doctor id and optionally a date.
+2. System validates the doctor name and id (and, if exists, the date).
+3. System displays all half-hourly slots for that doctor for next 7 days or on a specific date, each marked as Available or Booked (with patient name).
 
    Use case ends.
 
@@ -423,12 +423,18 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     Use case ends.
 
 * 2b. The date is in an invalid format.
-  * 2b1. System shows: `Invalid date format. Use YYYY-MM-DD.`
+  * 2b1. System shows: 
+  ```
+  Invalid command format!
+  viewsched: Views the schedule of a doctor (optionally for a specific date).
+  Parameters: d/DOCTOR_NAME id/DOCTOR_ID [date/YYYY-MM-DD]
+  Example: viewsched d/John Tan id/1 date/2026-03-20
+  ```
 
     Use case resumes at step 1.
 
 * 2c. The date is in the past.
-  * 2c1. System shows: `Cannot view schedule for past dates.`
+  * 2c1. System shows: `No schedule available for this date.`
 
     Use case resumes at step 1.
 
@@ -439,7 +445,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **MSS**
 
 1. Receptionist views the doctor's schedule (see Use case: View a doctor's schedule).
-2. Receptionist enters the add appointment command with patient name, doctor name, date, and time.
+2. Receptionist enters the add appointment command with patient ID, doctor ID, date, and time.
 3. System validates all fields and checks slot availability.
 4. System books the appointment and confirms with appointment details.
 
@@ -448,45 +454,46 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 3a. The patient name does not match any existing patient.
-  * 3a1. System shows: `Patient not found. Please add the patient first.`
+  * 3a1. System shows: `Patient not found: INDEX`
 
     Use case ends.
 
 * 3b. The doctor name does not match any existing doctor.
-  * 3b1. System shows: `Doctor not found. Please check again.`
+  * 3b1. System shows: `Doctor not found: INDEX`
 
     Use case ends.
 
 * 3c. The date is invalid or in the past.
-  * 3c1. System shows: `Invalid date format. Use YYYY-MM-DD.` or `Cannot book appointments for past dates.`
+  * 3c1. Date in the past, system shows: `Appointment date must be within 7 days from today!`
+  * 3c2. Invalid date, system shows: `Please input a valid date. The date must be formatted as YYYY-MM-DD`
 
     Use case resumes at step 2.
 
 * 3d. The time is not one of the valid hourly slots (09:00–16:00).
-  * 3d1. System shows: `Invalid time. Must be one of the clinic's available hourly slots (09:00–16:00).`
+  * 3d1. System shows: `Please choose a time within operating hours`
 
     Use case resumes at step 2.
 
 * 3e. The selected slot is already booked with that doctor.
-  * 3e1. System shows that the slot is unavailable.
+  * 3e1. System shows: `This slot is already booked. Please edit the appointment if you wish to change it`
 
     Use case resumes at step 1.
 
 * 3f. The patient already has an appointment at the same date and time.
-  * 3f1. System shows that the patient has a conflicting appointment.
+  * 3f1. System shows that the appointment slot is taken.
 
     Use case resumes at step 2.
 
 ---
 
-**Use case: Delete a doctor, patient, or appointment**
+**Use case: Delete a doctor**
 
 **MSS**
 
-1. Receptionist views the relevant list (doctors, patients, or appointments).
+1. Receptionist views the list.
 2. System displays the list with indices.
-3. Receptionist enters the delete command with the target index.
-4. System deletes the entry and confirms with the deleted record's details.
+3. Receptionist enters the `deldoc` command with the target index.
+4. System deletes the doctor entry and confirms with the deleted record's details.
 
    Use case ends.
 
@@ -497,24 +504,25 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
   Use case ends.
 
 * 3a. A name is entered instead of an index.
-  * 3a1. System shows: `Invalid index. Please enter a valid index number.`
+  * 3a1. System shows: 
+  ```
+  Invalid command format!
+  deldoc: Deletes the doctor identified by the index number used in the displayed doctor list.
+  Parameters: INDEX (must be a positive integer)
+  Example: deldoc 1
+  ```
 
     Use case resumes at step 2.
 
 * 3b. The index does not refer to any entry in the currently displayed list.
-  * 3b1. System shows: `Invalid index. Please enter a valid index number.`
+  * 3b1. System shows: `The doctor index provided is invalid`
 
     Use case resumes at step 2.
 
-* 4a. The deleted entry is a doctor.
-  * 4a1. System also deletes all appointments associated with that doctor.
+* 3c. The deleted entry is not a doctor.
+  * 3c1. System shows `The person at the specified index is not a doctor.`
 
-    Use case ends.
-
-* 4b. The deleted entry is a patient.
-  * 4b1. System also deletes all appointments associated with that patient.
-
-    Use case ends.
+    Use case resumes at step 2.
 
 ### Non-Functional Requirements
 
