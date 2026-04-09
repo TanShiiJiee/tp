@@ -59,7 +59,6 @@ public class ParserUtil {
      */
     public static Index parseEditIndex(String oneBasedIndex) throws ParseException {
         String trimmedIndex = oneBasedIndex.trim();
-        System.out.println("Parsing index: " + trimmedIndex); // Debug statement
         if (!StringUtil.isInteger(trimmedIndex)) {
             throw new ParseException(
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditPatCommand.MESSAGE_USAGE));

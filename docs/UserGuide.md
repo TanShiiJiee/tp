@@ -10,12 +10,13 @@ CLInicDesk is a desktop application designed for **receptionists at small-scale 
 
 CLInicDesk is optimized for use through a Command Line Interface (CLI) while still providing the convenience of a Graphical User Interface (GUI). CLInicDesk enables receptionists who can type quickly to perform clinic management tasks such as adding patients, viewing doctor availabilities, and booking appointments faster than traditional systems.
 
+**Note:** This app is meant to be used with commands in English only.
 <!-- * Table of Contents -->
 <page-nav-print />
 
 --------------------------------------------------------------------------------------------------------------------
 
-## Quick start
+## Setup Guidelines
 
 <div class="quick-start-steps">
 
@@ -56,7 +57,7 @@ CLInicDesk is optimized for use through a Command Line Interface (CLI) while sti
 <table class="convention-table">
 <tr><th>Convention</th><th>Meaning</th><th>Example</th></tr>
 <tr><td><code>UPPER_CASE</code></td><td>A parameter you supply</td><td><code>adddoc n/NAME</code> → <code>adddoc n/John Doe</code></td></tr>
-<tr><td><code>[square brackets]</code></td><td>Optional field</td><td><code>viewsched d/DOCTOR_NAME [date/YYYY-MM-DD]</code></td></tr>
+<tr><td><code>[square brackets]</code></td><td>Optional field</td><td><code>viewsched d/DOCTOR_NAME id/DOCTOR_ID [date/YYYY-MM-DD]</code></td></tr>
 <tr><td>Any parameter order</td><td>Parameters can appear in any order</td><td><code>n/NAME p/PHONE</code> or <code>p/PHONE n/NAME</code></td></tr>
 </table>
 
@@ -72,23 +73,26 @@ The table below summarises the rules and constraints for all input fields used a
 
 <table class="constraints-table">
 <tr><th>Field</th><th>Constraints</th></tr>
-<tr><td><strong>NAME</strong></td><td>Alphanumeric characters and spaces only. Case-insensitive for matching (e.g. <code>john doe</code> matches <code>John Doe</code>). Must not be blank.</td></tr>
-<tr><td><strong>PHONE_NUMBER</strong></td><td>Numeric digits only. Must be at least 3 digits long.</td></tr>
+<tr><td><strong>NAME</strong></td><td>Alphabets, hyphens, apostrophe and/or spaces only. Case-insensitive for matching (e.g. <code>john doe</code> matches <code>John Doe</code>). Must not be blank.</td></tr>
+<tr><td><strong>PHONE_NUMBER</strong></td><td>Numeric digits only. Must be 8 digits long.</td></tr>
 <tr><td><strong>EMAIL</strong></td><td>Must follow the standard <code>local-part@domain</code> format (e.g. <code>name@example.com</code>).</td></tr>
-<tr><td><strong>ADDRESS</strong></td><td>Any non-blank string.</td></tr>
+<tr><td><strong>ADDRESS</strong></td><td>Any non-blank string, minimum 3 characters.</td></tr>
 <tr><td><strong>INDEX</strong></td><td>A positive integer (1, 2, 3, …) referring to the position in the currently displayed list.</td></tr>
+<tr><td><strong>DOCTOR_ID / PATIENT_ID</strong></td><td>The numeric ID shown on each person's card in the displayed list. Must be a positive integer.</td></tr>
+<tr><td><strong>APPOINTMENT_ID</strong></td><td>The numeric ID returned when an appointment is created via <code>addappt</code>. Must be a non-negative integer.</td></tr>
 <tr><td><strong>DATE</strong> (<code>YYYY-MM-DD</code>)</td><td>Must be in strict ISO 8601 format (e.g. <code>2026-04-10</code>). Must be today or within the next 7 days.</td></tr>
 <tr><td><strong>TIME</strong> (<code>HH:MM</code>)</td><td>Must be one of the half-hourly slots from <code>09:00</code> to <code>16:30</code> (i.e. <code>09:00</code>, <code>09:30</code>, <code>10:00</code>, … <code>16:30</code>).</td></tr>
-<tr><td><strong>DOCTOR_NAME</strong></td><td>Must exactly match an existing doctor's name (case-insensitive).</td></tr>
-<tr><td><strong>PATIENT_NAME</strong></td><td>Must exactly match an existing patient's name (case-insensitive).</td></tr>
+<tr><td><strong>DOCTOR_NAME</strong></td><td>Must exactly match an existing doctor's name (case-insensitive). Used with <code>viewsched</code>.</td></tr>
 </table>
 
 <box type="info" seamless>
 
 **Additional assumptions:**
-* **Doctor duplicate detection:** Two doctors are considered duplicates if they share the same name (case-insensitive) **and** either the same phone number or the same email.
+* **Duplicate detection:** Two doctors (or two patients) are considered duplicates if they share the same name (case-insensitive) **and** either the same phone number or the same email.
 * **Schedule window:** Doctor schedules are displayed and bookable for a rolling 7-day window from today.
 * **Doctor IDs:** Each doctor is automatically assigned a unique, persistent ID that is preserved across edits. IDs are not user-editable.
+* **Patient IDs:** Each patient is automatically assigned a unique, persistent ID that is preserved across edits. IDs are not user-editable.
+* **Patient duplicate detection:** Two patients are considered duplicates if they share the same name (case-insensitive) **and** the same email.
 
 </box>
 
@@ -105,13 +109,13 @@ Adds a doctor to the app.
 Format: `adddoc n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS`
 
 **Notes:**
-* `NAME` is the name of the doctor. It should not be blank. Only alphabets and spaces are allowed.
-* `PHONE_NUMBER` should only contain numbers and be at least 3 digits.
+* `NAME` is the name of the doctor. It should not be blank. Only alphabets, followed by hyphens, apostrophe and/or spaces are allowed.
+* `PHONE_NUMBER` should only contain numbers and be 8 digits.
 * `EMAIL` must match the standard email format (e.g. `name@example.com`).
 
 Examples:
 * `adddoc n/John Doe p/98765432 e/johnd@doctor.com a/John street, block 123, #01-01`
-* `adddoc n/Betsy Crowe e/betsycrowe@doctor.com a/Newgate Hospital p/1234567`
+* `adddoc n/Betsy Crowe e/betsycrowe@doctor.com a/Newgate Hospital p/12345678`
 
 Expected output:
 ```
@@ -171,13 +175,13 @@ Adds a patient to the app.
 Format: `addpat n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS`
 
 **Notes:**
-* `NAME` is the name of the patient. It should not be blank. Only alphabets and spaces are allowed.
-* `PHONE_NUMBER` should only contain numbers and be at least 3 digits.
+* `NAME` is the name of the patient. It should not be blank. Only alphabets, followed by hyphens, apostrophe and/or spaces are allowed.
+* `PHONE_NUMBER` should only contain numbers and be 8 digits.
 * `EMAIL` must match the standard email format (e.g. `name@example.com`).
 
 Examples:
 * `addpat n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `addpat n/Betsy Crowe e/betsycrowe@example.com a/Newgate Hospital p/1234567`
+* `addpat n/Betsy Crowe e/betsycrowe@example.com a/Newgate Hospital p/12345678`
 
 Expected output:
 ```
@@ -237,23 +241,30 @@ Commands for scheduling, modifying, and cancelling appointments, and viewing doc
 
 #### Viewing a doctor's schedule : `viewsched`
 
-Displays all appointment slots for a specific doctor for a week or on a given date, showing whether each slot is available or booked.
+Displays a doctor's schedule in a separate schedule panel, either for a specific date or for the next 7 days.
 
-Format: `viewsched d/DOCTOR_NAME [date/YYYY-MM-DD]`
+Format: `viewsched d/DOCTOR_NAME id/DOCTOR_ID [date/YYYY-MM-DD]`
 
 **Notes:**
-* `DOCTOR_NAME` must match an existing doctor's name. The match is case-insensitive. e.g. `john tan` will match `John Tan`.
+* `DOCTOR_NAME` must match an existing doctor's name. The match is case-insensitive, so `john tan` will match `John Tan`.
+* `DOCTOR_ID` must match the doctor's assigned ID.
 * `DATE` must be in the strict `YYYY-MM-DD` format. Other formats such as `22-02-2026` or `Feb 22 2026` are not accepted.
-* The date cannot be in the past and must be within 7 days of today's date.
-* Appointment slots are displayed in half-hourly intervals from 09:00 to 17:00.
+* If `date/` is omitted, `viewsched` shows the doctor's schedule for the next 7 days starting from today.
+* If you request a date outside the available schedule window, the app shows `No schedule available for this date.`
+* Appointment slots are displayed in half-hourly intervals from 09:00 to 16:30.
+* The schedule panel uses light blocks for available slots and darker blocks for booked slots.
 
 Examples:
-* `viewsched d/John Tan date/2026-04-10` displays John Tan's schedule on 10 Apr 2026.
-* `viewsched d/Alice Lim` displays Alice Lim's schedule for the next 7 days.
+* `viewsched d/John Tan id/1 date/2026-04-10` displays John Tan's schedule on 10 Apr 2026.
+* `viewsched d/Alice Lim id/2` displays Alice Lim's schedule for the next 7 days.
+
+Screenshot placeholder: add a single-day schedule panel screenshot here.
+
+Screenshot placeholder: add a weekly schedule panel screenshot here.
 
 Expected output:
 ```
-Schedule for John Tan on 2026-04-10
+Schedule for John Tan (ID: 1) on 2026-04-10
 ```
 
 #### Adding an appointment : `addappt`
@@ -314,58 +325,45 @@ Examples:
 
 Expected output:
 ```
-Appointment deleted!
+Edited Patient: John Doe; Phone: 91234567; Email: johndoe@example.com; Address: 123456; Tags:
 ```
+## Editing an appointment : `editappt`
+Edits the details of an existing appointment
+Format : `editappt d/OLD_DOCTOR date/OLD_DATE time/OLD_TIME (n/NEW_NAME) (d/NEW_DOC) (date/NEW_DATE) (time/NEW_TIME)`
 
---------------------------------------------------------------------------------------------------------------------
+**Notes**
+* Edits the appointment at the old date and time for the old doctor
+* The new fields in brackets are optional, but there must be at least one new field to edit.
+e.g. `editappt d/Louis date/2026-03-28 time/09:00 time/10:00` is acceptable and will rebook the slot to 10am
+for the same patient,but `editappt d/Louis date/2026-03-28 time/09:00` is invalid on its own.
 
-### General commands
-
-#### Viewing help : `help`
-
-Shows a message explaining how to access the help page.
-
-<div class="image-container">
-
-![help message](images/helpMessageTwo.png)
-
-</div>
-
-Format: `help`
-
-#### Listing all persons : `list`
+### Listing all persons : `list`
 
 Shows a list of all persons (doctors and patients) in the app.
 
 Format: `list`
 
-#### Locating persons by name : `find`
+### Locating persons by name: `find`
 
 Finds persons whose names contain any of the given keywords.
 
 Format: `find KEYWORD [MORE_KEYWORDS]`
 
-**Notes:**
-* The search is case-insensitive. e.g. `hans` will match `Hans`.
-* The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`.
+* The search is case-insensitive. e.g `hans` will match `Hans`
+* The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
 * Only the name is searched.
-* Only full words will be matched. e.g. `Han` will not match `Hans`.
+* Only full words will be matched e.g. `Han` will not match `Hans`
 * Persons matching at least one keyword will be returned (i.e. `OR` search).
-  e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`.
+  e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
 
 Examples:
-* `find John` returns `john` and `John Doe`.
-* `find alex david` returns `Alex Yeoh`, `David Li`.
-
-<div class="image-container">
-
-![result for 'find alex david'](images/findAlexDavidResult.png)
-
-</div>
+* `find John` returns `john` and `John Doe`
+* `find alex david` returns `Alex Yeoh`, `David Li`<br>
+  ![result for 'find alex david'](images/findAlexDavidResult.png)
 
 #### Clearing all entries : `clear`
 
-Clears all entries from the app UI temporarily. This does not delete data.
+Clears all entries from the app display temporarily. Use `list` to show all entries again. This does not delete data.
 
 Format: `clear`
 
@@ -398,7 +396,6 @@ If your changes to a data file make its format invalid, CLInicDesk will discard 
 Furthermore, certain edits can cause CLInicDesk to behave in unexpected ways (e.g. if a value entered is outside the acceptable range). Therefore, edit the data files only if you are confident that you can update them correctly.
 
 </box>
-
 --------------------------------------------------------------------------------------------------------------------
 
 ## FAQ
@@ -452,7 +449,7 @@ Furthermore, certain edits can cause CLInicDesk to behave in unexpected ways (e.
 <tr class="cat-divider">
   <td class="cat-appt" rowspan="4">Appointment<br>Management</td>
   <td><strong>View Schedule</strong></td>
-  <td><code>viewsched d/DOCTOR_NAME [date/YYYY-MM-DD]</code><br>e.g., <code>viewsched d/John Tan date/2026-04-10</code></td>
+  <td><code>viewsched d/DOCTOR_NAME id/DOCTOR_ID [date/YYYY-MM-DD]</code><br>e.g., <code>viewsched d/John Tan id/1 date/2026-04-10</code></td>
 </tr>
 <tr>
   <td><strong>Add Appointment</strong></td>
