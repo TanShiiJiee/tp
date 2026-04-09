@@ -316,7 +316,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Use cases
 
-(For all use cases below, the **System** is the `ClinicBook` and the **Actor** is the `receptionist`, unless specified otherwise)
+(For all use cases below, the **System** is `CLInicDesk` and the **Actor** is the `receptionist`, unless specified otherwise)
 
 ---
 
@@ -324,7 +324,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1. Receptionist enters the add doctor command with name, phone, and email.
+1. Receptionist enters the add doctor command with name, phone, email, and address.
 2. System validates all fields.
 3. System adds the doctor and confirms with doctor details.
 
@@ -367,7 +367,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1. Receptionist enters the add patient command with name, phone, and email.
+1. Receptionist enters the add patient command with name, phone, email, and address.
 2. System validates all fields.
 3. System adds the patient and confirms with patient details.
 
@@ -454,13 +454,13 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 3a. The patient name does not match any existing patient.
-  * 3a1. System shows: `Patient not found: INDEX`
+* 3a. The patient ID does not match any existing patient.
+  * 3a1. System shows: `Patient not found: ID`
 
     Use case ends.
 
-* 3b. The doctor name does not match any existing doctor.
-  * 3b1. System shows: `Doctor not found: INDEX`
+* 3b. The doctor ID does not match any existing doctor.
+  * 3b1. System shows: `Doctor not found: ID`
 
     Use case ends.
 
@@ -470,7 +470,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
     Use case resumes at step 2.
 
-* 3d. The time is not one of the valid hourly slots (09:00–16:00).
+* 3d. The time is not one of the valid half-hourly slots (09:00–16:30).
   * 3d1. System shows: `Please choose a time within operating hours`
 
     Use case resumes at step 2.
@@ -538,7 +538,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **Private contact detail**: A contact detail that is not meant to be shared with others
-* **Slot**: A time slot (30-minute intervals from 09:00 to 17:00, with the last slot at 16:30) in a doctor's schedule
+* **Slot**: A time slot (30-minute intervals from 09:00 to 16:30) in a doctor's schedule
 * **Schedule**: A calendar of available and booked time slots for a doctor
 * **Patient ID**: A unique auto-generated identifier for each patient (e.g., 1, 2, 3, ...)
 * **Doctor ID**: A unique auto-generated identifier for each doctor (e.g., 1, 2, 3, ...)

@@ -8,7 +8,11 @@
 [![CI Status](https://github.com/se-edu/addressbook-level3/workflows/Java%20CI/badge.svg)](https://github.com/se-edu/addressbook-level3/actions)
 [![codecov](https://codecov.io/gh/se-edu/addressbook-level3/branch/master/graph/badge.svg)](https://codecov.io/gh/se-edu/addressbook-level3)
 
+<div class="image-container">
+
 ![Ui](images/Ui.png)
+
+</div>
 
 **CLInicDesk is a desktop application that helps small-scale medical centre receptionists manage patient, doctor, and appointment records.** While it has a GUI, most of the user interactions happen using a CLI (Command Line Interface).
 
