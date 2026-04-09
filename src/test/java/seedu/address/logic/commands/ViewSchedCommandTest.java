@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -104,7 +106,7 @@ public class ViewSchedCommandTest {
 
         CommandResult result = command.execute(model);
 
-        String expected = "Schedule for john tan (ID: 1) on 2026-03-20\n\n";
+        String expected = "Schedule for John Tan (ID: 1) on 2026-03-20\n\n";
 
         assertEquals(expected, result.getFeedbackToUser());
     }
@@ -114,9 +116,8 @@ public class ViewSchedCommandTest {
         ViewSchedCommand command =
                 new ViewSchedCommand("John Tan", 99, FIXED_DATE);
 
-        CommandResult result = command.execute(model);
-
-        assertEquals("Doctor not found.", result.getFeedbackToUser());
+        CommandException exception = assertThrows(CommandException.class, () -> command.execute(model));
+        assertEquals("Doctor not found.", exception.getMessage());
     }
 
     @Test
@@ -136,16 +137,16 @@ public class ViewSchedCommandTest {
         ViewSchedCommand command =
                 new ViewSchedCommand("Jane Lim", 1, FIXED_DATE);
 
-        assertEquals(ViewSchedCommand.MESSAGE_DOCTOR_NOT_FOUND,
-                command.execute(model).getFeedbackToUser());
+        CommandException exception = assertThrows(CommandException.class, () -> command.execute(model));
+        assertEquals(ViewSchedCommand.MESSAGE_DOCTOR_NOT_FOUND, exception.getMessage());
     }
 
     @Test
     public void execute_patientNameWeekly_failure() throws Exception {
         ViewSchedCommand command = new ViewSchedCommand("Jane Lim", 1, null);
 
-        assertEquals(ViewSchedCommand.MESSAGE_DOCTOR_NOT_FOUND,
-                command.execute(model).getFeedbackToUser());
+        CommandException exception = assertThrows(CommandException.class, () -> command.execute(model));
+        assertEquals(ViewSchedCommand.MESSAGE_DOCTOR_NOT_FOUND, exception.getMessage());
     }
 
     @Test
@@ -153,10 +154,8 @@ public class ViewSchedCommandTest {
         ViewSchedCommand command =
                 new ViewSchedCommand("John Tan", 1, LocalDate.of(2026, 3, 25));
 
-        CommandResult result = command.execute(model);
-
-        assertEquals("No schedule available for this date.",
-                     result.getFeedbackToUser());
+        CommandException exception = assertThrows(CommandException.class, () -> command.execute(model));
+        assertEquals("No schedule available for this date.", exception.getMessage());
     }
 
     // test written by codex

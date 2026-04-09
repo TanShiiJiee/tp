@@ -45,8 +45,8 @@ public class ViewSchedCommandParser implements Parser<ViewSchedCommand> {
             doctorId = parsedDoctorId.getOneBased();
         } catch (ParseException e) {
             throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                            ViewSchedCommand.MESSAGE_USAGE));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        ViewSchedCommand.MESSAGE_USAGE));
         }
 
         Optional<String> dateOpt = argMultimap.getValue(CliSyntax.PREFIX_DATE);
