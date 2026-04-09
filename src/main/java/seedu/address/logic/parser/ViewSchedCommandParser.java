@@ -32,6 +32,11 @@ public class ViewSchedCommandParser implements Parser<ViewSchedCommand> {
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                             ViewSchedCommand.MESSAGE_USAGE));
         }
+        if (doctorIdOpt.isEmpty()) {
+            throw new ParseException(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                            ViewSchedCommand.MESSAGE_USAGE));
+        }
 
         String doctorName = doctorOpt.get().trim();
         int doctorId;
@@ -39,7 +44,7 @@ public class ViewSchedCommandParser implements Parser<ViewSchedCommand> {
             Index parsedDoctorId = ParserUtil.parseIndex(doctorIdOpt.get().trim());
             doctorId = parsedDoctorId.getOneBased();
         } catch (ParseException e) {
-        throw new ParseException(
+            throw new ParseException(
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                         ViewSchedCommand.MESSAGE_USAGE));
         }
