@@ -43,7 +43,8 @@ public class ListCommandTest {
     @Test
     public void execute_emptyAddressBook_showsEmptyMessage() {
         Model emptyModel = new ModelManager(new AddressBook(), new AddressBook(), new AddressBook(), new UserPrefs());
-        Model expectedEmptyModel = new ModelManager(new AddressBook(), new AddressBook(), new AddressBook(), new UserPrefs());
+        Model expectedEmptyModel = new ModelManager(
+                new AddressBook(), new AddressBook(), new AddressBook(), new UserPrefs());
         assertCommandSuccess(new ListCommand(), emptyModel, ListCommand.MESSAGE_EMPTY, expectedEmptyModel);
     }
 }
