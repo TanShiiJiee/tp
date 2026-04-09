@@ -142,7 +142,7 @@ public class Appointment {
                     ? thisTime.equals(otherTime)
                     : Objects.equals(this.time, other.getTime());
 
-            return this.patientName.equals(other.getPatName())
+            return Objects.equals(this.patientName, other.getPatName())
                     && this.doctorId == other.getDocId()
                     && this.patientId == other.getPatientId()
                     && this.date.equals(other.getDate())
@@ -150,6 +150,11 @@ public class Appointment {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(patientName, doctorId, patientId, date, time);
     }
 
     private static LocalTime parseTimeOrNull(String value) {

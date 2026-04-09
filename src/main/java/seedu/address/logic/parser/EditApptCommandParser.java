@@ -55,6 +55,10 @@ public class EditApptCommandParser {
         String newDate = argMultimap.getValue(PREFIX_NEWDATE).map(String::trim).orElse(null);
         String newTime = argMultimap.getValue(PREFIX_NEWTIME).map(String::trim).orElse(null);
 
+        if (newDoc == null && newDate == null && newTime == null) {
+            throw new ParseException("At least one new field is required");
+        }
+
         if ("".equals(newDoc)) {
             throw new ParseException("Doctor id cannot be empty.");
         }

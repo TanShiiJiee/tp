@@ -167,7 +167,7 @@ public class AppointmentManager {
 
         mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
     }
-
+//helper class written by copilot
     private static final class AppointmentData {
         private Integer doctorId;
         private String doctorName;
@@ -194,6 +194,50 @@ public class AppointmentManager {
             return LocalTime.parse(time, INPUT_TIME_FORMAT).format(STORAGE_TIME_FORMAT);
         } catch (DateTimeParseException e) {
             throw new IOException("Please input a valid time. Time must be formatted as H:MM (e.g. 9:00 or 09:00)");
+        }
+    }
+
+    /**
+     * Updates all appointments with the old doctor name to use the new doctor name.
+     * @param oldName the previous doctor name
+     * @param newName the new doctor name
+     * @throws IOException
+     */
+    public static void updateDoctorNameInAppointments(String oldName, String newName) throws IOException {
+        Map<String, AppointmentData> data = readAppointments();
+        boolean updated = false;
+
+        for (AppointmentData apptData : data.values()) {
+            if (apptData.doctorName != null && apptData.doctorName.equalsIgnoreCase(oldName)) {
+                apptData.doctorName = newName;
+                updated = true;
+            }
+        }
+
+        if (updated) {
+            writeAppointments(data);
+        }
+    }
+
+    /**
+     * Updates all appointments with the old patient name to use the new patient name.
+     * @param oldName the previous patient name
+     * @param newName the new patient name
+     * @throws IOException
+     */
+    public static void updatePatientNameInAppointments(String oldName, String newName) throws IOException {
+        Map<String, AppointmentData> data = readAppointments();
+        boolean updated = false;
+
+        for (AppointmentData apptData : data.values()) {
+            if (apptData.patientName != null && apptData.patientName.equalsIgnoreCase(oldName)) {
+                apptData.patientName = newName;
+                updated = true;
+            }
+        }
+
+        if (updated) {
+            writeAppointments(data);
         }
     }
 }
