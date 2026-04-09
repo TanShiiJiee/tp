@@ -554,16 +554,16 @@ testers are expected to do more *exploratory* testing.
 
    1. Download the jar file and copy into an empty folder
 
-   1. Open a terminal and run `cd PATH_TO_FOLDER` to change directory to the location of the jar file. 
+   2. Open a terminal and run `cd PATH_TO_FOLDER` to change directory to the location of the jar file. 
    
-   1. Run the command `java -jar clinicdesk.jar` to launch the app.<br>
+   3. Run the command `java -jar clinicdesk.jar` to launch the app.<br>
        Expected: App launches successfully without any error.
    
 1. Saving window preferences
 
    1. Resize the window to an optimum size. Move the window to a different location. Close the window.
 
-   1. Re-launch the app by double-clicking the jar file.<br>
+   2. Re-launch the app by double-clicking the jar file.<br>
        Expected: The most recent window size and location is retained.
 
 
@@ -573,13 +573,13 @@ testers are expected to do more *exploratory* testing.
 
    1. Prerequisites: List all persons using the `list` command. Multiple persons in the list. Doctor is first person in the list.
 
-   1. Test case: `deldoc 1`<br>
+   2. Test case: `deldoc 1`<br>
       Expected: Doctor at index 1 is deleted from the list. Details of the deleted contact shown in the status message. 
 
-   1. Test case: `deldoc 0`<br>
+   3. Test case: `deldoc 0`<br>
       Expected: No person is deleted. Error details shown in the status message.
 
-   1. Other incorrect delete commands to try: `deldoc`, `delpat x`, `...` (where x is larger than the list size)<br>
+   4. Other incorrect delete commands to try: `deldoc`, `deldoc x` (where x is larger than the list size)<br>
       Expected: Similar to previous.
 
 
@@ -587,13 +587,17 @@ testers are expected to do more *exploratory* testing.
 
 1. Dealing with missing data files
    1. When a data file (patients.json, doctors.json, schedule.json) is missing, the app starts with an empty data container for that file. 
-   2. The app will continue to function normally, but no data will be loaded for that file. 
+   
+   2. The app will continue to function normally, but there is no data loaded for that file. 
+   
    3. Example: If patients.json is missing, the app starts with no patients but continues to function normally.
 
 2. Dealing with corrupted data files 
-   1. If a data file exists but contains invalid JSON format or illegal values, the app throws a `DataLoadingException`. 
-   2. To solve this, the user can either fix the corrupted file (e.g., by correcting the JSON format or values) or delete the corrupted file to start with an empty data container for that file.
-   3. Example: If patients.json contains malformed JSON, the app will discard it and start with no patients.
+   1. If a data file exists but contains invalid JSON format or illegal values, no data will be loaded. 
+   
+   2. To solve this, the user can either fix the corrupted file (e.g., by correcting the JSON format or values) or delete the corrupted file to start with an empty data container for that file before relaunching the app.
+   
+   3. Example: If patients.json contains malformed JSON, the app will discard it and start with no data entry.
 
 **Data loss prevention:**
 - Make regular backups of the `data/` folder
