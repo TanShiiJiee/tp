@@ -201,7 +201,6 @@ public class ScheduleManager {
         String patName = appt.getPatName();
         String date = appt.getDate();
         String time = appt.getTime();
-        boolean found = false;
 
         if (!isValidDate(date)) {
             throw new IOException("Please input a valid date. The date must be formatted as YYYY-MM-DD");
@@ -253,7 +252,6 @@ public class ScheduleManager {
 
             if (slots.get(standardizedTime) == null) {
                 slots.put(standardizedTime, patName);
-                found = true;
                 mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
             } else {
                 throw new IOException("This slot is already booked. "
@@ -264,9 +262,6 @@ public class ScheduleManager {
             throw new IOException("Doctor not registered");
 
         }
-        mapper.writerWithDefaultPrettyPrinter().writeValue(file, data);
-        System.out.println("sched added appt");
-
     }
 
     /**
@@ -276,7 +271,7 @@ public class ScheduleManager {
      */
     private static boolean isValidDate(String date) {
         try {
-            LocalDate formattedDate = LocalDate.parse(date);
+            LocalDate.parse(date);
             return true;
         } catch (DateTimeParseException e) {
             return false;
@@ -290,7 +285,7 @@ public class ScheduleManager {
      */
     private static boolean isValidTime(String time) {
         try {
-            LocalTime formattedDate = LocalTime.parse(time, DateTimeFormatter.ofPattern("H:mm"));
+            LocalTime.parse(time, DateTimeFormatter.ofPattern("H:mm"));
             return true;
         } catch (DateTimeParseException e) {
             return false;
