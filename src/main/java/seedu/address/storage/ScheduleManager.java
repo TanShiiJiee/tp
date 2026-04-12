@@ -212,7 +212,6 @@ public class ScheduleManager {
 
         if (apptDate.isBefore(today) || apptDate.isAfter(sevenDaysLater)) {
             throw new IOException("Appointment date must be within 7 days from today!");
-
         }
 
         if (!isValidTime(time)) {
