@@ -13,7 +13,7 @@ public class Appointment {
      * Sentinel value for appointments that have not been persisted/assigned an ID yet.
      * ID assignment is handled by {@code seedu.address.storage.AppointmentManager}.
      */
-    public static final int UNASSIGNED_ID = -1;
+    public static final int UNASSIGNED_ID = 0;
 
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("H:mm");
 

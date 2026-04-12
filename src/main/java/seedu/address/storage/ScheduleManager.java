@@ -208,15 +208,17 @@ public class ScheduleManager {
         //checks if date is within 7 days
         LocalDate apptDate = LocalDate.parse(date);
         LocalDate today = LocalDate.now();
-        LocalDate sevenDaysLater = today.plusDays(7);
+        LocalDate sevenDaysLater = today.plusDays(6);
 
         if (apptDate.isBefore(today) || apptDate.isAfter(sevenDaysLater)) {
             throw new IOException("Appointment date must be within 7 days from today!");
+
         }
 
         if (!isValidTime(time)) {
             throw new IOException("Please input a valid time. Time must be formatted as H:MM (e.g. 9:00 or 09:00)");
         }
+
 
         ObjectMapper mapper = new ObjectMapper();
         File file = new File(FILE_PATH);
@@ -238,9 +240,13 @@ public class ScheduleManager {
             LocalTime apptTime = LocalTime.parse(time, inputFormatter);
             LocalTime firstTime = LocalTime.parse(sortedSlots.firstKey(), storageFormatter);
             LocalTime lastTime = LocalTime.parse(sortedSlots.lastKey(), storageFormatter);
+            LocalTime now = LocalTime.now();
 
             if (apptTime.isBefore(firstTime) || apptTime.isAfter(lastTime)) {
                 throw new IOException("Please choose a time within operating hours");
+            }
+            if(apptTime.isBefore(now)) {
+                throw new IOException("This slot has passed, Please choose a time after" + now.format(storageFormatter));
             }
 
             // Formats input into JSON key format, to prevent dummy entries/overwrites.

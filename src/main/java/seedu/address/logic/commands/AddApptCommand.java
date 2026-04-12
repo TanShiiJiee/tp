@@ -23,10 +23,10 @@ public class AddApptCommand extends Command {
             + "Parameters: "
             + PREFIX_DOCTOR_ID + " DOCTOR_ID "
             + PREFIX_PATIENT_ID + " PATIENT_ID "
-            + PREFIX_DATE + " DATE (yyyy-mm-dd)"
+            + PREFIX_DATE + " DATE (yyyy-mm-dd) "
             + PREFIX_TIME + " TIME (H:MM)\n"
             + "Example: " + COMMAND_WORD + " "
-            + PREFIX_DOCTOR_ID + "1 "
+            + PREFIX_DOCTOR_ID + " 1 "
             + PREFIX_PATIENT_ID + " 3 "
             + PREFIX_DATE + " 2026-03-11 "
             + PREFIX_TIME + " 9:00 ";
