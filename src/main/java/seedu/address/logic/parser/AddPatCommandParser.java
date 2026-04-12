@@ -42,7 +42,7 @@ public class AddPatCommandParser implements Parser<AddPatCommand> {
         Email email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
         Address address = ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get());
 
-        Patient patient = new Patient(name, phone, email, address);
+        Patient patient = new Patient(name, phone, email, address, Patient.getNextId());
 
         return new AddPatCommand(patient);
     }

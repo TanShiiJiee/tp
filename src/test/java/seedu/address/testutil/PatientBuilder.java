@@ -92,7 +92,10 @@ public class PatientBuilder {
         if (patientId != null) {
             return new Patient(name, phone, email, address, patientId);
         }
-        return new Patient(name, phone, email, address);
+        int patId = Patient.getNextId();
+        Patient patient = new Patient(name, phone, email, address, patId);
+        Patient.incrementPatientId();
+        return patient;
     }
 
 }

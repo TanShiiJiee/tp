@@ -93,8 +93,12 @@ class JsonAdaptedPerson {
         } else if (TYPE_PATIENT.equals(type)) {
             if (patId != null) {
                 return new Patient(modelName, modelPhone, modelEmail, modelAddress, patId);
+            } else {
+                int id = Patient.getNextId(); // get current ID
+                Patient patient = new Patient(modelName, modelPhone, modelEmail, modelAddress, id);
+                Patient.incrementPatientId();
+                return patient;
             }
-            return new Patient(modelName, modelPhone, modelEmail, modelAddress);
         }
         return new Person(modelName, modelPhone, modelEmail, modelAddress);
     }

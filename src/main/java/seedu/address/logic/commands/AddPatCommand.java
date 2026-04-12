@@ -58,6 +58,7 @@ public class AddPatCommand extends Command {
         }
 
         model.addPatient(toAdd);
+        toAdd.incrementPatientId();
         return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
     }
 
