@@ -3,6 +3,7 @@ package seedu.address.logic.parser;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 
 import seedu.address.commons.core.index.Index;
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.DeleteDocCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
@@ -21,6 +22,9 @@ public class DeleteDocCommandParser implements Parser<DeleteDocCommand> {
             Index index = ParserUtil.parseIndex(args);
             return new DeleteDocCommand(index);
         } catch (ParseException pe) {
+            if (args.trim().matches("-?\\d+")) {
+                throw new ParseException(Messages.MESSAGE_INVALID_DOCTOR_DISPLAYED_INDEX);
+            }
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteDocCommand.MESSAGE_USAGE), pe);
         }
