@@ -516,6 +516,50 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void addAppt_patientConflictingSameTime_throws() throws Exception {
+        //written by copilot
+        backupAndRestore(() -> {
+            LocalDate today = LocalDate.now().plusDays(1);
+            Doctor doctor = new DoctorBuilder().withName("ConflictDoc").withDocId(85)
+                    .withPhone("99850000").withEmail("conflict@doc.com").build();
+            Patient patient = new PatientBuilder().withName("ConflictPat")
+                    .withPhone("88850000").withEmail("conflict@pat.com").build();
+            modelManager.addDoctor(doctor);
+            modelManager.addPatient(patient);
+            ScheduleManager.addDoctorSchedule(doctor);
+
+            Appointment appt1 = new Appointment(85, "ConflictDoc", patient.getPatientId(),
+                    "ConflictPat", today.toString(), "09:00", -1);
+            modelManager.addAppt(appt1);
+
+            Appointment appt2 = new Appointment(85, "ConflictDoc", patient.getPatientId(),
+                    "ConflictPat", today.toString(), "09:00", -1);
+            assertThrows(IOException.class, () -> modelManager.addAppt(appt2));
+        });
+    }
+
+    @Test
+    public void editAppt_invalidTimeFormatStored_throws() throws Exception {
+        //written by copilot
+        backupAndRestore(() -> {
+            LocalDate today = LocalDate.now().plusDays(1);
+            Doctor doctor = new DoctorBuilder().withName("InvalidTimeDoc").withDocId(86)
+                    .withPhone("99860000").withEmail("invalidtime@doc.com").build();
+            Patient patient = new PatientBuilder().withName("InvalidTimePat")
+                    .withPhone("88860000").withEmail("invalidtime@pat.com").build();
+            modelManager.addDoctor(doctor);
+            modelManager.addPatient(patient);
+
+            Appointment apptWithBadTime = new Appointment(86, "InvalidTimeDoc", patient.getPatientId(),
+                    "InvalidTimePat", today.toString(), "999:99", -1);
+            apptWithBadTime.setApptID(1);
+            patient.addAppt(apptWithBadTime);
+
+            assertThrows(IOException.class, () -> modelManager.editAppt(apptWithBadTime, null, null, "10:00"));
+        });
+    }
+
+    @Test
     public void delAppt_cleansUpAllStorageLayers_verifyCleanup() throws Exception {
         //written by copilot
         backupAndRestore(() -> {
