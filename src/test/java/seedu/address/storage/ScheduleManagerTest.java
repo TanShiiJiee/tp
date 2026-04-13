@@ -218,60 +218,60 @@ public class ScheduleManagerTest {
 
     @Test
     public void getPatientAtSlotByDocId_emptySlot_returnsNull() throws Exception {
-        LocalDate today = LocalDate.now();
-        writeScheduleFile(createDoctor(1, "John Tan"), today, null);
+        LocalDate futureDate = LocalDate.now().plusDays(1);
+        writeScheduleFile(createDoctor(1, "John Tan"), futureDate, null);
 
-        assertNull(ScheduleManager.getPatientAtSlotByDocId(1, today.toString(), "09:00"));
+        assertNull(ScheduleManager.getPatientAtSlotByDocId(1, futureDate.toString(), "09:00"));
     }
 
     @Test
     public void getPatientAtSlotByDocId_validSlot_returnsPatient() throws Exception {
-        LocalDate today = LocalDate.now();
-        writeScheduleFile(createDoctor(1, "John Tan"), today, "Alice Lim");
+        LocalDate futureDate = LocalDate.now().plusDays(1);
+        writeScheduleFile(createDoctor(1, "John Tan"), futureDate, "Alice Lim");
 
-        String patient = ScheduleManager.getPatientAtSlotByDocId(1, today.toString(), "09:00");
+        String patient = ScheduleManager.getPatientAtSlotByDocId(1, futureDate.toString(), "09:00");
         assertEquals("Alice Lim", patient);
     }
 
     @Test
     public void getPatientAtSlotByDocId_noFile_returnsNull() throws Exception {
         new File(SCHEDULE_FILE_PATH).delete();
-        assertNull(ScheduleManager.getPatientAtSlotByDocId(1, LocalDate.now().toString(), "09:00"));
+        assertNull(ScheduleManager.getPatientAtSlotByDocId(1, LocalDate.now().plusDays(1).toString(), "09:00"));
     }
 
 
     @Test
     public void getPatientAtSlotByDocId_noDate_returnsNull() throws Exception {
-        LocalDate today = LocalDate.now();
-        writeScheduleFile(createDoctor(1, "John Tan"), today, "Alice Lim");
+        LocalDate futureDate = LocalDate.now().plusDays(1);
+        writeScheduleFile(createDoctor(1, "John Tan"), futureDate, "Alice Lim");
 
-        assertNull(ScheduleManager.getPatientAtSlotByDocId(1, today.plusDays(5).toString(), "09:00"));
+        assertNull(ScheduleManager.getPatientAtSlotByDocId(1, futureDate.plusDays(5).toString(), "09:00"));
     }
 
     @Test
     public void getScheduleByDocId_noDate_throwsIllegalArgument() throws Exception {
-        LocalDate today = LocalDate.now();
-        writeScheduleFile(createDoctor(1, "John Tan"), today, null);
+        LocalDate futureDate = LocalDate.now().plusDays(1);
+        writeScheduleFile(createDoctor(1, "John Tan"), futureDate, null);
 
         assertThrows(IllegalArgumentException.class, ()
-                -> ScheduleManager.getScheduleByDocId(1, today.plusDays(5).toString()));
+                -> ScheduleManager.getScheduleByDocId(1, futureDate.plusDays(5).toString()));
     }
 
     @Test
     public void getPatientAtSlotByDocId_noDoctor_returnsNull() throws Exception {
-        LocalDate today = LocalDate.now();
-        writeScheduleFile(createDoctor(1, "John Tan"), today, "Alice Lim");
+        LocalDate futureDate = LocalDate.now().plusDays(1);
+        writeScheduleFile(createDoctor(1, "John Tan"), futureDate, "Alice Lim");
 
-        assertNull(ScheduleManager.getPatientAtSlotByDocId(99, today.toString(), "09:00"));
+        assertNull(ScheduleManager.getPatientAtSlotByDocId(99, futureDate.toString(), "09:00"));
     }
 
     @Test
     public void getScheduleIgnoreCase_noDate_throwsIllegalArgument() throws Exception {
-        LocalDate today = LocalDate.now();
-        writeScheduleFile(createDoctor(1, "John Tan"), today, null);
+        LocalDate futureDate = LocalDate.now().plusDays(1);
+        writeScheduleFile(createDoctor(1, "John Tan"), futureDate, null);
 
         assertThrows(IllegalArgumentException.class, ()
-                -> ScheduleManager.getScheduleIgnoreCase("John Tan", today.plusDays(5).toString()));
+                -> ScheduleManager.getScheduleIgnoreCase("John Tan", futureDate.plusDays(5).toString()));
     }
 
     // added by copilot
