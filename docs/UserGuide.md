@@ -120,7 +120,7 @@ Examples:
 
 Expected output:
 ```
-New doctor added: John Doe; Phone: 98765432; Email: johnd@doctor.com; Address: John street, block 123, #01-01
+New doctor added: John Doe; Phone: 98765432; Email: johnd@doctor.com; Address: John street, block 123, #01-01; Tags: Doctor
 ```
 
 #### Editing a doctor : `editdoc`
@@ -141,7 +141,7 @@ Examples:
 
 Expected output:
 ```
-Edited Doctor: John Doe; Phone: 91234567; Email: johnd@doctor.com; Address: 21 Bencoolen
+Edited Doctor: John Doe; Phone: 91234567; Email: johnd@doctor.com; Address: 21 Bencoolen; Tags: Doctor
 ```
 
 #### Deleting a doctor : `deldoc`
@@ -160,7 +160,7 @@ Examples:
 
 Expected output:
 ```
-Deleted Doctor: John Doe; Phone: 98765432; Email: johnd@doctor.com; Address: John street, block 123, #01-01
+Deleted Doctor: John Doe; Phone: 98765432; Email: johnd@doctor.com; Address: John street, block 123, #01-01; Tags: Doctor
 ```
 
 --------------------------------------------------------------------------------------------------------------------
@@ -186,7 +186,7 @@ Examples:
 
 Expected output:
 ```
-New patient added: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01
+New patient added: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01; Tags: Patient
 ```
 
 #### Editing a patient : `editpat`
@@ -206,7 +206,7 @@ Examples:
 
 Expected output:
 ```
-Edited Patient: John Doe; Phone: 91234567; Email: johndoe@example.com; Address: 123456
+Edited Patient: John Doe; Phone: 91234567; Email: johndoe@example.com; Address: 123456; Tags: Patient
 ```
 
 #### Deleting a patient : `delpat`
@@ -225,7 +225,7 @@ Examples:
 
 Expected output:
 ```
-Deleted Patient: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01
+Deleted Patient: John Doe; Phone: 98765432; Email: johnd@example.com; Address: John street, block 123, #01-01; Tags: Patient
 ```
 
 --------------------------------------------------------------------------------------------------------------------
