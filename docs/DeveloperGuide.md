@@ -217,6 +217,76 @@ _{more aspects and alternatives to be added}_
 
 --------------------------------------------------------------------------------------------------------------------
 
+#### \[Planned\] Patient Appointment Viewing
+
+#### Planned Enhancements
+
+The proposed patient appointment viewing feature allows receptionists to view a patient's upcoming appointments directly, complementing the existing doctor schedule viewing functionality. This addresses the need for quick access to patient-specific appointment information during clinic operations, such as when patients call to confirm or reschedule their appointments.
+
+This feature will introduce a new command, such as `viewpatappt`, that takes a patient identifier (name or ID) and optionally a date range, displaying all future appointments for that patient, including doctor details, appointment times, and appointment IDs.
+
+#### Usage Scenario
+
+Step 1. A patient calls the clinic and cannot remember their next appointment details.
+
+Step 2. The receptionist enters the command `viewpatappt n/John Doe` to view John's upcoming appointments.
+
+Step 3. The system validates the patient name and retrieves their appointments.
+
+Step 4. The system displays a list of John's future appointments, showing dates, times, assigned doctors, and appointment IDs.
+
+Step 5. The receptionist informs the patient of their next appointment and can proceed to book, edit, or cancel appointments as needed.
+
+   Use case ends.
+
+**Extensions**
+
+* 3a. The patient name does not match any existing patient.
+  * 3a1. System shows: `Patient not found.`
+
+    Use case resumes at step 2.
+
+* 3b. The patient has no upcoming appointments.
+  * 3b1. System shows: `No upcoming appointments found for this patient.`
+
+    Use case ends.
+
+#### Design Considerations
+
+**Aspect: Patient identification method:**
+
+* **Alternative 1:** Use patient name (e.g., `viewpatappt n/John Doe`).
+  * Pros: Intuitive and easy to remember, aligns with existing command patterns.
+  * Cons: Potential ambiguity if multiple patients share similar names.
+
+* **Alternative 2 (current choice):** Use patient ID (e.g., `viewpatappt id/1`).
+  * Pros: Unique identification, eliminates name conflicts, consistent with appointment management commands.
+  * Cons: Requires receptionist to know or quickly look up patient ID.
+
+**Aspect: Date range and filtering:**
+
+* **Alternative 1:** Show all future appointments without limit.
+  * Pros: Provides complete appointment history and future schedule.
+  * Cons: May overwhelm users with extensive appointment lists, especially for long-term patients.
+
+* **Alternative 2 (current choice):** Limit to next 7-14 days by default, with optional date range parameters.
+  * Pros: Focuses on immediate and relevant appointments, reduces information overload, matches the 7-day limit in doctor schedule viewing.
+  * Cons: May miss important longer-term appointments.
+
+**Aspect: Display format and information:**
+
+* **Alternative 1:** Simple list format showing appointment details in chronological order.
+  * Pros: Consistent with existing list-based displays, easy to implement.
+  * Cons: May not provide clear overview for patients with multiple appointments.
+
+* **Alternative 2:** Grouped by date with doctor information highlighted.
+  * Pros: Better organization for multiple appointments, easier to scan for specific dates.
+  * Cons: More complex implementation, potential inconsistency with other views.
+
+_{more aspects and alternatives to be added}_
+
+--------------------------------------------------------------------------------------------------------------------
+
 ## **Documentation, logging, testing, configuration, dev-ops**
 
 * [Documentation guide](Documentation.md)
