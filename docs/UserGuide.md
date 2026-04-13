@@ -56,6 +56,7 @@ CLInicDesk is optimized for use through a Command Line Interface (CLI) while sti
 
 <table class="convention-table">
 <tr><th>Convention</th><th>Meaning</th><th>Example</th></tr>
+<tr><td><code>lower_case</code></td><td>A command</td><td><code>list</code></td></tr>
 <tr><td><code>UPPER_CASE</code></td><td>A parameter you supply</td><td><code>adddoc n/NAME</code> → <code>adddoc n/John Doe</code></td></tr>
 <tr><td><code>[square brackets]</code></td><td>Optional field</td><td><code>viewsched d/DOCTOR_NAME id/DOCTOR_ID [date/YYYY-MM-DD]</code></td></tr>
 <tr><td>Any parameter order</td><td>Parameters can appear in any order</td><td><code>n/NAME p/PHONE</code> or <code>p/PHONE n/NAME</code></td></tr>
