@@ -99,6 +99,22 @@ public class ScheduleInitialiserTest {
         assertEquals("Alice Lim", ((Map<String, String>) doctorTwo.get(today.plusDays(1).toString())).get("10:00"));
     }
 
+    @Test
+    public void initialize_emptyDoctorList_updatesTimestampOnly() throws Exception {
+        LocalDate today = LocalDate.now();
+        writeEmptyScheduleFile(today.minusDays(1));
+
+        Model model = new ModelManager(new AddressBook(), new AddressBook(), new AddressBook(),
+                new seedu.address.model.UserPrefs());
+
+        ScheduleInitialiser.initialize(model);
+
+        Map<String, Object> data = mapper.readValue(new File(FILE_PATH), LinkedHashMap.class);
+        assertEquals(today.toString(), data.get(LAST_UPDATED_KEY));
+        assertFalse(data.containsKey("doc_1"));
+        assertFalse(data.containsKey("doc_2"));
+    }
+
     @SuppressWarnings("unchecked")
     private void writeScheduleFile(LocalDate lastUpdatedDate) throws IOException {
         File file = new File(FILE_PATH);
@@ -108,6 +124,16 @@ public class ScheduleInitialiserTest {
         root.put(LAST_UPDATED_KEY, lastUpdatedDate.toString());
         root.put("doc_1", createDoctorSchedule(lastUpdatedDate, 1, "John Tan", null));
         root.put("doc_2", createDoctorSchedule(lastUpdatedDate, 2, "John Tan", "Alice Lim"));
+
+        mapper.writerWithDefaultPrettyPrinter().writeValue(file, root);
+    }
+
+    private void writeEmptyScheduleFile(LocalDate lastUpdatedDate) throws IOException {
+        File file = new File(FILE_PATH);
+        file.getParentFile().mkdirs();
+
+        Map<String, Object> root = new LinkedHashMap<>();
+        root.put(LAST_UPDATED_KEY, lastUpdatedDate.toString());
 
         mapper.writerWithDefaultPrettyPrinter().writeValue(file, root);
     }
