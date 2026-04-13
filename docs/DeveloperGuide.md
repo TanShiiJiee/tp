@@ -33,6 +33,7 @@ The ***Architecture Diagram*** given above explains the high-level design of the
 Given below is a quick overview of main components and how they interact with each other.
 
 **Main components of the architecture**
+
 **`Main`** (consisting of classes [`Main`](https://github.com/AY2526S2-CS2103T-W12-1/tp/tree/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
 * At app launch, it initializes the other components in the correct sequence, and connects them up with each other.
 * At shut down, it shuts down the other components and invokes cleanup methods where necessary.
