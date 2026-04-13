@@ -244,7 +244,7 @@ public class ScheduleManager {
             if (apptTime.isBefore(firstTime) || apptTime.isAfter(lastTime)) {
                 throw new IOException("Please choose a time within operating hours");
             }
-            if (apptTime.isBefore(now)) {
+            if (apptTime.isBefore(now) && apptDate.isEqual(today)) {
                 throw new IOException("This slot has passed, "
                                         + "Please choose a time after" + now.format(storageFormatter));
 

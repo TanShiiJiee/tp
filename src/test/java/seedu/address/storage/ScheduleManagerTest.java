@@ -99,14 +99,14 @@ public class ScheduleManagerTest {
     @Test
     public void addAppt_validAppointment_booksSlot() throws Exception {
         LocalDate today = LocalDate.now();
-        writeScheduleFile(createDoctor(1, "John Tan"), today, null);
+        writeScheduleFile(createDoctor(1, "John Tan"), today.plusDays(1), null);
 
-        Appointment appt = new Appointment(1, "John Tan", 2, "Jane Lim", today.toString(), "09:00", -1);
+        Appointment appt = new Appointment(1, "John Tan", 2, "Jane Lim", today.plusDays(1).toString(), "09:00", -1);
         ScheduleManager.addAppt(appt);
 
-        Map<String, String> schedule = ScheduleManager.getScheduleByDocId(1, today.toString());
+        Map<String, String> schedule = ScheduleManager.getScheduleByDocId(1, today.plusDays(1).toString());
         assertEquals("Jane Lim", schedule.get("09:00"));
-        assertEquals("Jane Lim", ScheduleManager.getPatientAtSlot("John Tan", today.toString(), "09:00"));
+        assertEquals("Jane Lim", ScheduleManager.getPatientAtSlot("John Tan", today.plusDays(1).toString(), "09:00"));
     }
 
     @Test

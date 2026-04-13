@@ -86,7 +86,7 @@ public class AddApptCommandTest {
         model.addDoctor(doctor);
         model.addPatient(patient);
 
-        Appointment appt = new Appointment(DOCTOR_ID, PATIENT_ID, date.format(DATE_FORMAT), "09:30");
+        Appointment appt = new Appointment(DOCTOR_ID, PATIENT_ID, date.format(DATE_FORMAT), "10:00");
         AddApptCommand command = new AddApptCommand(appt);
 
         CommandResult result = command.execute(model);
@@ -129,7 +129,7 @@ public class AddApptCommandTest {
         model.addDoctor(doctor);
         model.addPatient(patient);
 
-        Appointment appt = new Appointment(DOCTOR_ID, PATIENT_ID, "2026-13-01", "09:30");
+        Appointment appt = new Appointment(DOCTOR_ID, PATIENT_ID, "2026-13-01", "10:00");
         AddApptCommand command = new AddApptCommand(appt);
 
         assertThrows(CommandException.class, () -> command.execute(model));
