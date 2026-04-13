@@ -324,9 +324,110 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     Use case resumes at step 1.
 
 * 2d. A doctor with the same name (case-insensitive) and email/phone already exists.
-  * 2d1. System shows: `A doctor with these contact details already exists in the app`
+  * 2d1. System shows: `This doctor already exists in the app`
 
     Use case ends.
+
+---
+
+**Use case: Edit a doctor**
+
+**MSS**
+
+1. Receptionist views the list.
+2. System displays the list with indices.
+3. Receptionist enters the `editdoc` command with the target index and the fields to update (name, phone, email, and/or address).
+4. System validates all provided fields.
+5. System updates the doctor entry and confirms with the updated record's details.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. The list is empty.
+
+  Use case ends.
+
+* 3a. A name is entered instead of an index.
+    * 3a1. System shows:
+  ```
+  Invalid command format!
+  editdoc: Edits the details of the doctor identified by the index number used in the displayed list. Existing values will be overwritten by the input values.
+  Parameters: INDEX (must be a positive integer) [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS]
+  Example: editdoc 1 p/91234567 e/johndoe@example.com
+  ```
+
+  Use case resumes at step 2.
+
+* 3b. The index does not refer to any entry in the currently displayed list.
+    * 3b1. System shows: `The doctor index provided is invalid`
+
+      Use case resumes at step 2.
+
+* 3c. The edited entry is not a doctor.
+    * 3c1. System shows `The person at the specified index is not a doctor.`
+
+      Use case resumes at step 2.
+
+* 4a. The name contains invalid characters.
+    * 4a1. System shows: `Names should only contain letters, and may include single spaces, apostrophes, or hyphens between words. Name should not be blank`
+
+      Use case resumes at step 3.
+
+* 4b. The phone number is not exactly 8 digits.
+    * 4b1. System shows: `Phone numbers should only contain numbers, and it should be 8 digits long`
+
+      Use case resumes at step 3.
+
+* 4c. The email is not in a valid format.
+    * 4c1. System shows the same email validation error message as "Add a doctor" use case.
+
+      Use case resumes at step 3.
+
+* 4d. The updated name and email or phone conflicts with an existing doctor's details.
+    * 4d1. System shows: `This doctor already exists in the app`
+
+      Use case resumes at step 3.
+
+---
+
+**Use case: Delete a doctor**
+
+**MSS**
+
+1. Receptionist views the list.
+2. System displays the list with indices.
+3. Receptionist enters the `deldoc` command with the target index.
+4. System deletes the doctor entry and confirms with the deleted record's details.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. The list is empty.
+
+  Use case ends.
+
+* 3a. A name is entered instead of an index.
+    * 3a1. System shows:
+  ```
+  Invalid command format!
+  deldoc: Deletes the doctor identified by the index number used in the displayed doctor list.
+  Parameters: INDEX (must be a positive integer)
+  Example: deldoc 1
+  ```
+
+  Use case resumes at step 2.
+
+* 3b. The index does not refer to any entry in the currently displayed list.
+    * 3b1. System shows: `The doctor index provided is invalid`
+
+      Use case resumes at step 2.
+
+* 3c. The deleted entry is not a doctor.
+    * 3c1. System shows `The person at the specified index is not a doctor.`
+
+      Use case resumes at step 2.
 
 ---
 
@@ -367,9 +468,110 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     Use case resumes at step 1.
 
 * 2d. A patient with the same name (case-insensitive) and same email already exists.
-  * 2d1. System shows: `A patient with the same name and email already exists in the app`
+  * 2d1. System shows: `This patient already exists in the app`
 
     Use case ends.
+
+---
+
+**Use case: Edit a patient**
+
+**MSS**
+
+1. Receptionist views the list.
+2. System displays the list with indices.
+3. Receptionist enters the `editpat` command with the target index and the fields to update (name, phone, email, and/or address).
+4. System validates all provided fields.
+5. System updates the patient entry and confirms with the updated record's details.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. The list is empty.
+
+  Use case ends.
+
+* 3a. A name is entered instead of an index.
+    * 3a1. System shows:
+  ```
+  Invalid command format!
+  editpat: Edits the details of the patient identified by the index number used in the displayed list. Existing values will be overwritten by the input values.
+  Parameters: INDEX (must be a positive integer) [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS]
+  Example: editpat 1 p/91234567 e/johndoe@example.com
+  ```
+
+  Use case resumes at step 2.
+
+* 3b. The index does not refer to any entry in the currently displayed list.
+    * 3b1. System shows: `The patient index provided is invalid`
+
+      Use case resumes at step 2.
+
+* 3c. The edited entry is not a patient.
+    * 3c1. System shows `The person at the specified index is not a patient.`
+
+      Use case resumes at step 2.
+
+* 4a. The name contains invalid characters.
+    * 4a1. System shows: `Names should only contain letters, and may include single spaces, apostrophes, or hyphens between words. Name should not be blank`
+
+      Use case resumes at step 3.
+
+* 4b. The phone number is not exactly 8 digits.
+    * 4b1. System shows: `Phone numbers should only contain numbers, and it should be 8 digits long`
+
+      Use case resumes at step 3.
+
+* 4c. The email is not in a valid format.
+    * 4c1. System shows the same email validation error message as "Add a patient" use case.
+
+      Use case resumes at step 3.
+
+* 4d. The updated name and email conflict with an existing patient's details.
+    * 4d1. System shows: `This patient already exists in the app`
+
+      Use case resumes at step 3.
+
+---
+
+**Use case: Delete a patient**
+
+**MSS**
+
+1. Receptionist views the list.
+2. System displays the list with indices.
+3. Receptionist enters the `delpat` command with the target index.
+4. System deletes the patient entry and confirms with the deleted record's details.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. The list is empty.
+
+  Use case ends.
+
+* 3a. A name is entered instead of an index.
+    * 3a1. System shows:
+  ```
+  Invalid command format!
+  delpat: Deletes the patient identified by the index number used in the displayed patient list.
+  Parameters: INDEX (must be a positive integer)
+  Example: delpat 1
+  ```
+
+  Use case resumes at step 2.
+
+* 3b. The index does not refer to any entry in the currently displayed list.
+    * 3b1. System shows: `The patient index provided is invalid`
+
+      Use case resumes at step 2.
+
+* 3c. The deleted entry is not a patient.
+    * 3c1. System shows `The person at the specified index is not a patient.`
+
+      Use case resumes at step 2.
 
 ---
 
@@ -422,12 +624,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 3a. The patient ID does not match any existing patient.
-  * 3a1. System shows: `Patient not found: ID`
+  * 3a1. System shows: `Patient not found: <ID>`
 
     Use case ends.
 
 * 3b. The doctor ID does not match any existing doctor.
-  * 3b1. System shows: `Doctor not found: ID`
+  * 3b1. System shows: `Doctor not found: <ID>`
 
     Use case ends.
 
@@ -438,7 +640,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
     Use case resumes at step 2.
 
 * 3d. The time is not one of the valid half-hourly slots (09:00–16:30).
-  * 3d1. System shows: `Please choose a time within operating hours`
+  * 3d1. System shows: `The time <HH:MM> is not a valid 30-minute slot for this doctor.`
 
     Use case resumes at step 2.
 
@@ -454,43 +656,127 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ---
 
-**Use case: Delete a doctor**
+**Use case: Edit an appointment**
 
 **MSS**
 
-1. Receptionist views the list.
-2. System displays the list with indices.
-3. Receptionist enters the `deldoc` command with the target index.
-4. System deletes the doctor entry and confirms with the deleted record's details.
+1. Receptionist views a doctor's schedule (see Use case: View a doctor's schedule).
+2. Receptionist identifies an appointment to edit.
+3. Receptionist enters the `editappt` command with the appointment ID and the fields to update (patient ID, doctor ID, date, and/or time).
+4. System validates all provided fields and checks slot availability.
+5. System updates the appointment entry and confirms with the updated record's details.
 
    Use case ends.
 
 **Extensions**
 
-* 2a. The list is empty.
+* 3a. The appointment ID does not exist.
+  * 3a1. System shows: `Appointment not found: <ID>`
 
-  Use case ends.
+    Use case ends.
 
-* 3a. A name is entered instead of an index.
-  * 3a1. System shows: 
+* 4a. The patient ID does not match any existing patient.
+  * 4a1. System shows: `Patient not found: <ID>`
+
+    Use case resumes at step 3.
+
+* 4b. The doctor ID does not match any existing doctor.
+  * 4b1. System shows: `Doctor not found: <ID>`
+
+    Use case resumes at step 3.
+
+* 4c. The date is invalid or in the past.
+  * 4c1. System shows the appropriate date validation error message.
+
+    Use case resumes at step 3.
+
+* 4d. The time is not one of the valid half-hourly slots (09:00–16:30).
+  * 4d1. System shows: `The time <HH:MM> is not a valid 30-minute slot for this doctor.`
+
+    Use case resumes at step 3.
+
+* 4e. The selected slot is already booked with the doctor.
+  * 4e1. System shows: `Could not edit appointment: This slot is already booked. Please edit the appointment if you wish to change it`
+
+    Use case resumes at step 3.
+
+* 4f. The patient already has an appointment at the new date and time.
+  * 4f1. System shows: `Patient already has an appointment at this time.`
+
+    Use case resumes at step 3.
+
+---
+
+**Use case: Delete an appointment**
+
+**MSS**
+
+1. Receptionist views a doctor's schedule (see Use case: View a doctor's schedule).
+2. Receptionist identifies an appointment to delete.
+3. Receptionist enters the `delappt` command with the appointment ID.
+4. System deletes the appointment entry and confirms with the deleted record's details.
+
+   Use case ends.
+
+**Extensions**
+
+* 3a. The appointment ID does not exist.
+  * 3a1. System shows: `Appointment not found: ID`
+
+    Use case ends.
+
+* 3b. The appointment ID format is invalid.
+  * 3b1. System shows: 
   ```
   Invalid command format!
-  deldoc: Deletes the doctor identified by the index number used in the displayed doctor list.
-  Parameters: INDEX (must be a positive integer)
-  Example: deldoc 1
+  delappt: Deletes the appointment identified by the appointment ID.
+  Parameters: ID (must be a valid appointment ID)
+  Example: delappt 1
   ```
 
-    Use case resumes at step 2.
+    Use case ends.
 
-* 3b. The index does not refer to any entry in the currently displayed list.
-  * 3b1. System shows: `The doctor index provided is invalid`
+---
 
-    Use case resumes at step 2.
+**Use case: Find persons**
 
-* 3c. The deleted entry is not a doctor.
-  * 3c1. System shows `The person at the specified index is not a doctor.`
+**MSS**
 
-    Use case resumes at step 2.
+1. Receptionist enters the `find` command with one or more search keywords.
+2. System searches for persons (patients or doctors) matching the keywords.
+3. System displays a filtered list of all matching persons with their indices.
+
+   Use case ends.
+
+**Extensions**
+
+* 1a. The search keywords are empty.
+  * 1a1. System shows: 
+  ```
+  Invalid command format!
+  find: Finds all persons whose names contain any of the specified keywords (case-insensitive) and displays them as a list with index numbers.
+  Parameters: KEYWORD [MORE_KEYWORDS]...
+  Example: find alice bob charlie
+  ```
+
+    Use case ends.
+
+* 2a. No persons match the search criteria.
+  * 2a1. System displays an empty list and shows: `0 persons listed!`
+
+    Use case ends.
+
+* 2b. Multiple persons match the search criteria.
+  * 2b1. System displays all matching persons in a filtered list with their indices.
+
+    Use case ends.
+
+* 2c. The search matches both patients and doctors.
+  * 2c1. System displays all matching persons from both categories.
+
+    Use case ends.
+
+---
 
 ### Non-Functional Requirements
 
