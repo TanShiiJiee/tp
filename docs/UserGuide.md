@@ -179,7 +179,7 @@ Adds a patient to the app.
 Format: `addpat n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS`
 
 **Notes:**
-* `NAME` is the name of the patient. It should not be blank. Only alphabets, followed by hyphens, apostrophe and/or spaces are allowed.
+* `NAME` is the name of the patient. It should not be blank. Only alphabets, followed by hyphens, apostrophe, forward slash and/or spaces are allowed.
 * `PHONE_NUMBER` should only contain numbers and be 8 digits.
 * `EMAIL` must match the standard email format (e.g. `name@example.com`).
 

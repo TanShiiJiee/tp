@@ -11,7 +11,7 @@ public class Name {
 
     public static final String MESSAGE_CONSTRAINTS =
         "Names should only contain letters, and may include "
-            + "single spaces, apostrophes, slashes or hyphens between words. "
+            + "single spaces, apostrophes, forward slash or hyphens between words. "
             + "Name should not be blank";
 
     /*
