@@ -21,7 +21,7 @@ public class SchedulePanel extends UiPart<Region> {
     private static final String FXML = "SchedulePanel.fxml";
     private static final int MAX_PATIENT_NAME_LENGTH = 24;
     private static final double SLOT_MIN_WIDTH = 100;
-    private static final double SLOT_MIN_HEIGHT = 30;
+    private static final double SLOT_MIN_HEIGHT = 60;
 
     @FXML
     private GridPane scheduleGrid;
