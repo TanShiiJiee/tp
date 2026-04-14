@@ -225,6 +225,30 @@ public class AddApptCommandTest {
         assertThrows(CommandException.class, () -> command.execute(model));
     }
 
+    @Test
+    public void execute_patientMultipleDoctorsSameSlot_throws() throws Exception {
+        //written by copilot
+        Model model = new ModelManager();
+        Doctor doctor1 = new DoctorBuilder().withName("Doctor One").withDocId(DOCTOR_ID).build();
+        Doctor doctor2 = new DoctorBuilder().withName("Doctor Two").withDocId(2)
+                .withPhone("99999999").withEmail("doctortwo@example.com").build();
+        Patient patient = new PatientBuilder().withName(PATIENT_NAME).withPatId(PATIENT_ID).build();
+        model.addDoctor(doctor1);
+        model.addDoctor(doctor2);
+        model.addPatient(patient);
+
+        ScheduleManager.addDoctorSchedule(doctor1);
+        ScheduleManager.addDoctorSchedule(doctor2);
+
+        Appointment appt1 = new Appointment(DOCTOR_ID, PATIENT_ID, date.format(DATE_FORMAT), "10:00");
+        AddApptCommand command1 = new AddApptCommand(appt1);
+        command1.execute(model);
+
+        Appointment appt2 = new Appointment(2, PATIENT_ID, date.format(DATE_FORMAT), "10:00");
+        AddApptCommand command2 = new AddApptCommand(appt2);
+
+        assertThrows(CommandException.class, () -> command2.execute(model));
+    }
 
     @Test
     public void execute_duplicateAppointment_throws() throws Exception {
